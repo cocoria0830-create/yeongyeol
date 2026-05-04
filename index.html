@@ -743,8 +743,14 @@
     width: 100%;
     max-width: 440px;
     border-radius: 24px 24px 0 0;
-    padding: 28px 20px 40px;
+    padding: 28px 20px 52px;
     animation: slideUp 0.35s cubic-bezier(0.4,0,0.2,1);
+    /* 아이폰 스크롤 핵심 */
+    max-height: 88vh;
+    max-height: 88dvh; /* 동적 뷰포트 (노치/홈바 고려) */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 
   @keyframes slideUp {
@@ -2672,25 +2678,25 @@ function buildFallbackReport(info) {
   // 숙요점 이름에서 핵심 키워드 추출
   function sugyoEnergy(sugyoName, sugyoDesc) {
     const map = {
-      '각수':'새로운 시작과 개척의 에너지', '항수':'균형과 정의를 추구하는 에너지',
-      '저수':'안정과 뿌리를 중시하는 에너지', '방수':'따뜻한 보금자리를 만드는 에너지',
-      '심수':'뜨거운 열정과 심장의 에너지', '미수':'끈기와 완성을 향한 에너지',
-      '기수':'풍요와 수확의 에너지', '두수':'측정과 판단의 에너지',
-      '우수':'성실과 노력의 에너지', '여수':'유연함과 변화의 에너지',
-      '허수':'비움과 채움의 에너지', '위수':'경계와 통찰의 에너지',
-      '실수':'창조와 건설의 에너지', '벽수':'수호와 방어의 에너지',
-      '규수':'학문과 지혜의 에너지', '누수':'집합과 통솔의 에너지',
-      '위수2':'축적과 보관의 에너지', '묘수':'다수와 집단의 에너지',
-      '필수':'완성과 결실의 에너지', '자수':'예리함과 선택의 에너지',
-      '삼수':'용맹과 전진의 에너지', '정수':'깊은 지혜, 우물의 에너지',
-      '귀수':'변화와 소멸의 에너지', '유수':'유연함과 흐름의 에너지',
-      '성수':'빛남과 중심의 에너지', '장수':'확장과 성장의 에너지',
-      '익수':'비상과 자유의 에너지',
+      '각수':'새로운 시작과 개척', '항수':'균형과 정의 추구',
+      '저수':'안정과 뿌리 중시', '방수':'따뜻한 보금자리',
+      '심수':'뜨거운 열정', '미수':'끈기와 완성',
+      '기수':'풍요와 수확', '두수':'측정과 판단',
+      '우수':'성실과 노력', '여수':'유연함과 변화',
+      '허수':'비움과 채움', '위수':'경계와 통찰',
+      '실수':'창조와 건설', '벽수':'수호와 방어',
+      '규수':'학문과 지혜', '누수':'집합과 통솔',
+      '위수2':'축적과 보관', '묘수':'다수와 집단',
+      '필수':'완성과 결실', '자수':'예리함과 선택',
+      '삼수':'용맹과 전진', '정수':'깊은 지혜',
+      '귀수':'변화와 소멸', '유수':'유연함과 흐름',
+      '성수':'빛남과 중심', '장수':'확장과 성장',
+      '익수':'비상과 자유',
     };
     // 숙 이름에서 한글 키 추출 (예: "井宿(정수)" → "정수")
     const match = sugyoName.match(/\(([^)]+)\)/);
     const key = match ? match[1] : '';
-    return map[key] || sugyoDesc || '독특한 우주적 에너지';
+    return map[key] || sugyoDesc || '독특한 우주적 기운';
   }
 
   // 숙요점 관계별 이달/올해 특성
@@ -2712,12 +2718,14 @@ function buildFallbackReport(info) {
 
   // ── 숙요점 조합별 특성 ──
   function sugyoPairChar(myS, pS, good) {
-    const myKey = (myS.match(/\(([^)]+)\)/) || [])[1] || '';
-    const pKey  = (pS.match(/\(([^)]+)\)/) || [])[1] || '';
+    const myKey = (myS.match(/\(([^)]+)\)/) || [])[1] || myS;
+    const pKey  = (pS.match(/\(([^)]+)\)/) || [])[1] || pS;
+    const myE = sugyoEnergy(myS, '');
+    const pE  = sugyoEnergy(pS, '');
     if (good) {
-      return `${myS}의 에너지와 ${pS}의 에너지가 만나면, 두 사람 내면에서 서로를 끌어당기는 힘이 생겨. ${myKey}의 ${sugyoEnergy(myS, '')} + ${pKey}의 ${sugyoEnergy(pS, '')}가 조화를 이루는 조합이거든.`;
+      return `${myS}의 ${myE} 기운이랑 ${pS}의 ${pE} 기운이 만나면, 두 사람 내면에서 서로를 끌어당기는 힘이 생겨. 조화를 이루는 조합이거든.`;
     } else {
-      return `${myS}의 에너지와 ${pS}의 에너지는 서로 다른 방향으로 흘러. ${myKey}의 ${sugyoEnergy(myS, '')}과 ${pKey}의 ${sugyoEnergy(pS, '')}이 부딪히는 지점이 있어서 서로를 이해하는 데 노력이 더 필요한 조합이야.`;
+      return `${myS}의 ${myE} 기운과 ${pS}의 ${pE} 기운은 서로 다른 방향으로 흘러. 부딪히는 지점이 있어서 서로를 이해하는 데 노력이 더 필요한 조합이야.`;
     }
   }
 
@@ -2757,11 +2765,11 @@ function buildFallbackReport(info) {
   <div class="tab-cards">
     <div class="tab-card good">
       <div class="tab-card-label">✦ 좋은 기운의 시기</div>
-      <div>상순(1~10일): ${mySugyo}의 ${sugyoEnergy(mySugyo, mySugyoDesc)} 에너지가 강하게 작동하는 타이밍이야. ${myName}이 먼저 연락하거나 만남을 제안하기 딱 좋은 때. 평소 말하기 어려웠던 것들을 꺼내봐도 잘 받아들여질 가능성이 높아. 중순(11~20일): 같이 뭔가 하면 자연스럽게 가까워지는 에너지가 있어. 새로운 경험해보기 좋아.</div>
+      <div>상순(1~10일): ${mySugyo}의 ${sugyoEnergy(mySugyo, mySugyoDesc)} 기운이 강하게 작동하는 타이밍이야. ${myName}이 먼저 연락하거나 만남을 제안하기 딱 좋은 때. 평소 말하기 어려웠던 것들을 꺼내봐도 잘 받아들여질 가능성이 높아. 중순(11~20일): 같이 뭔가 하면 자연스럽게 가까워지는 에너지가 있어. 새로운 경험해보기 좋아.</div>
     </div>
     <div class="tab-card bad">
       <div class="tab-card-label">◆ 조심할 시기</div>
-      <div>하순(21일~월말): ${pSugyo}의 ${sugyoEnergy(pSugyo, pSugyoDesc)} 에너지가 내면으로 향하는 시기야. ${pName}이 조용해지거나 연락이 줄어들 수 있어. 재촉하지 말고 "나 여기 있어" 신호 정도만 남겨줘.</div>
+      <div>하순(21일~월말): ${pSugyo}의 ${sugyoEnergy(pSugyo, pSugyoDesc)} 기운이 내면으로 향하는 시기야. ${pName}이 조용해지거나 연락이 줄어들 수 있어. 재촉하지 말고 "나 여기 있어" 신호 정도만 남겨줘.</div>
     </div>
   </div>
 </div>
@@ -2772,7 +2780,7 @@ function buildFallbackReport(info) {
       <div class="tab-card-label">✦ 긍정 시나리오</div>
       <div>${good
         ? `숙요점 "${relType}" 에너지랑 ${myZodiac}×${pZodiac} 조합이 이달 잘 맞아 떨어지면 두 사람이 한 단계 더 가까워지는 사건이 생겨. 우연히 단둘이 있게 되는 상황, 혹은 ${pName}이 먼저 솔직한 감정을 표현하는 순간. 이 흐름 타서 관계 업그레이드해봐.`
-        : `힘든 시기일 수 있지만 ${mySugyo}의 ${sugyoEnergy(mySugyo, '')} 덕분에 ${myName}이 상황을 지혜롭게 넘길 힘이 있어. 갈등이 있었다면 화해의 물꼬를 틀 수 있는 기회가 이달 안에 생겨.`}</div>
+        : `힘든 시기일 수 있지만 ${mySugyo}의 ${sugyoEnergy(mySugyo, '')} 기운 덕분에 ${myName}이 상황을 지혜롭게 넘길 힘이 있어. 갈등이 있었다면 화해의 물꼬를 틀 수 있는 기회가 이달 안에 생겨.`}</div>
     </div>
     <div class="tab-card bad">
       <div class="tab-card-label">◆ 주의 시나리오</div>
@@ -2872,8 +2880,8 @@ function buildFallbackReport(info) {
   const years = Array.from({length:10},(_,i)=>new Date().getFullYear()+i);
   const yearVibes = ['good','good','bad','good','good','bad','good','good','bad','good'];
   const yearTexts = [
-    `두 사람 관계가 새로운 국면으로 접어드는 해. ${mySugyo}의 ${sugyoEnergy(mySugyo,'')} 에너지가 올라오면서 ${myName}이 관계에서 더 주도적인 역할을 하게 돼. ${good?'서로에 대한 이해가 깊어지는 시기':'갈등을 넘어 진짜 서로를 알아가는 해'}야.`,
-    `${pSugyo}의 ${sugyoEnergy(pSugyo,'')} 에너지가 강해지는 해. ${pName}이 이 관계에 더 헌신하게 되거나, 반대로 자기 내면을 들여다보는 시기가 올 수 있어. 관계가 안정기에 접어드는 해.`,
+    `두 사람 관계가 새로운 국면으로 접어드는 해. ${mySugyo}의 ${sugyoEnergy(mySugyo,'')} 기운이 올라오면서 ${myName}이 관계에서 더 주도적인 역할을 하게 돼. ${good?'서로에 대한 이해가 깊어지는 시기':'갈등을 넘어 진짜 서로를 알아가는 해'}야.`,
+    `${pSugyo}의 ${sugyoEnergy(pSugyo,'')} 기운이 강해지는 해. ${pName}이 이 관계에 더 헌신하게 되거나, 반대로 자기 내면을 들여다보는 시기가 올 수 있어. 관계가 안정기에 접어드는 해.`,
     `시험의 해. 숙요점 "${relType}" 에너지가 외부적인 요인(일, 환경 변화)과 맞물리면서 관계가 흔들릴 수 있어. 근데 이 시험을 통과하면 그다음이 진짜야.`,
     `성장의 해. 전년도의 어려움을 넘긴 두 사람이 더 단단해져 있어. ${mySugyo}와 ${pSugyo}의 에너지가 이 해에 가장 잘 조화를 이루는 시기가 와.`,
     `전성기. ${myZodiac}과 ${pZodiac}의 에너지가 최고로 잘 맞는 해. 숙요점 "${relType}" 에너지도 이 해에 가장 빛나. 중요한 결정이 있다면 이 해에.`,
@@ -2913,7 +2921,7 @@ function buildFallbackReport(info) {
 <div class="report-block">
   <div class="report-tag">💫 현생의 끌림 — 왜 이 사람인가</div>
   <div class="report-text">
-    ${myName}이 ${pName}한테 끌리는 이유를 숙요점으로 보면 — ${mySugyo}의 ${sugyoEnergy(mySugyo, '')} 에너지를 가진 ${myName}이 ${pSugyo}의 ${sugyoEnergy(pSugyo, '')} 에너지를 가진 ${pName}을 만났을 때, 자기가 가지지 못한 걸 상대에게서 보는 거야.<br><br>
+    ${myName}이 ${pName}한테 끌리는 이유를 숙요점으로 보면 — ${mySugyo}(${sugyoEnergy(mySugyo,'')} 기운)인 ${myName}이 ${pSugyo}(${sugyoEnergy(pSugyo,'')} 기운)인 ${pName}을 만났을 때, 자기가 가지지 못한 걸 상대에게서 보는 거야.<br><br>
     별자리로 보면 ${myZodiac}(${myKeyword})이 ${pZodiac}(${pKeyword})에게서 자기의 결핍을 채우려는 무의식적인 끌림이 있어. 이게 나쁜 게 아니야. 오히려 서로의 부족한 부분을 채워주는 관계가 가장 오래가는 관계거든.<br><br>
     숙요점 "${relType}" 관계가 이 끌림의 우주적 근거야. ${relDesc}
   </div>
@@ -2923,7 +2931,7 @@ function buildFallbackReport(info) {
   <div class="report-text">
     ${good
       ? `숙요점 "${relType}" 관계답게 두 사람이 시너지를 내는 영역이 분명히 있어.<br><br>
-      <strong>숙요점 시너지:</strong> ${mySugyo}의 ${sugyoEnergy(mySugyo,'')}과 ${pSugyo}의 ${sugyoEnergy(pSugyo,'')}이 만나면 서로를 자극하고 성장시키는 힘이 생겨. 함께하면 혼자였을 때보다 더 잘 되는 느낌, 그게 이 조합의 특징이야.<br><br>
+      <strong>숙요점 시너지:</strong> ${mySugyo}의 ${sugyoEnergy(mySugyo,'')} 기운과 ${pSugyo}의 ${sugyoEnergy(pSugyo,'')} 기운이 만나면 서로를 자극하고 성장시키는 힘이 생겨. 함께하면 혼자였을 때보다 더 잘 되는 느낌, 그게 이 조합의 특징이야.<br><br>
       <strong>별자리 시너지:</strong> ${myZodiac}과 ${pZodiac}의 에너지가 대화에서 서로 새로운 시각을 열어줘. 지루하지 않은 관계야. 그리고 두 사람 모두 상대방을 향한 진심이 있어. 그 진심이 관계를 유지하는 가장 큰 힘이야.`
       : `쉽지 않은 관계지만, 잘 맞는 부분도 분명히 있어.<br><br>
       <strong>숙요점 관점:</strong> ${mySugyo}와 ${pSugyo}의 에너지는 다르지만, 그 다름이 서로를 더 넓은 사람으로 만들어줘. 각자의 에너지가 상대의 약점을 보완해주는 구조야.<br><br>
@@ -2934,7 +2942,7 @@ function buildFallbackReport(info) {
   <div class="report-tag">⚡ 계속 부딪히는 부분</div>
   <div class="report-text">
     솔직하게 말할게. 두 사람이 반복적으로 부딪히는 패턴이 있어.<br><br>
-    <strong>숙요점 갈등:</strong> ${mySugyo}의 ${sugyoEnergy(mySugyo,'')}과 ${pSugyo}의 ${sugyoEnergy(pSugyo,'')}이 충돌하는 지점이 있어. 특히 "${relType}" 관계의 에너지가 강하게 부딪힐 때, 의도치 않게 서로에게 상처를 주는 상황이 반복될 수 있어.<br><br>
+    <strong>숙요점 갈등:</strong> ${mySugyo}의 ${sugyoEnergy(mySugyo,'')} 기운과 ${pSugyo}의 ${sugyoEnergy(pSugyo,'')} 기운이 충돌하는 지점이 있어. 특히 "${relType}" 관계의 에너지가 강하게 부딪힐 때, 의도치 않게 서로에게 상처를 주는 상황이 반복될 수 있어.<br><br>
     <strong>별자리 갈등:</strong> ${myZodiac}(${myKeyword}) 방식과 ${pZodiac}(${pKeyword}) 방식이 충돌하는 지점이 있어. 주로 의사소통 방식과 감정 표현 방식에서 달라. 한 사람이 표현을 많이 할 때 다른 사람은 부담스럽고, 한 사람이 조용해지면 다른 사람은 불안한 그 사이클. 이걸 인식만 해도 반은 해결돼.
   </div>
 </div>
