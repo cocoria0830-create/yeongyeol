@@ -208,6 +208,7 @@
 
   .form-input {
     width: 100%;
+    box-sizing: border-box;  /* 박스 넘침 방지 핵심 */
     background: rgba(255,255,255,0.5);
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -217,6 +218,15 @@
     color: var(--text);
     outline: none;
     transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  /* date input 아이폰 튀어나옴 방지 */
+  input[type="date"].form-input,
+  input[type="time"].form-input {
+    -webkit-appearance: none;
+    appearance: none;
+    max-width: 100%;
+    min-height: 44px;  /* 터치 영역 확보 */
   }
 
   .night-mode .form-input {
@@ -245,22 +255,40 @@
     border: 1px solid var(--border);
     background: rgba(255,255,255,0.4);
     font-family: 'Noto Serif KR', serif;
-    font-size: 12px;
+    font-size: 13px;
     cursor: pointer;
     color: var(--text);
     transition: all 0.2s;
     letter-spacing: 0.05em;
+    font-weight: 500;
   }
 
-  .gender-btn.active {
-    background: var(--pink);
-    border-color: var(--pink);
+  /* 여성 버튼 — 핑크 */
+  .gender-btn:first-child.active,
+  .gender-btn#p-gender-f.active {
+    background: #FF6B9D;
+    border-color: #FF6B9D;
     color: white;
   }
 
-  .night-mode .gender-btn.active {
+  /* 남성 버튼 — 블루 */
+  .gender-btn:last-child.active,
+  .gender-btn#p-gender-m.active {
+    background: #5B9BD5;
+    border-color: #5B9BD5;
+    color: white;
+  }
+
+  .night-mode .gender-btn:first-child.active,
+  .night-mode .gender-btn#p-gender-f.active {
     background: var(--neon-pink);
     border-color: var(--neon-pink);
+  }
+
+  .night-mode .gender-btn:last-child.active,
+  .night-mode .gender-btn#p-gender-m.active {
+    background: #4A90E2;
+    border-color: #4A90E2;
   }
 
   /* 두 컬럼 */
@@ -438,22 +466,36 @@
 
   /* ── 결과 섹션 (나의 분석) ── */
   .result-header {
+    position: relative;
     text-align: center;
-    padding: 30px 0 10px;
+    padding: 16px 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .result-title {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 13px;
-    letter-spacing: 0.2em;
-    opacity: 0.5;
-    margin-bottom: 8px;
+  .back-btn {
+    position: absolute;
+    left: 0;
+    top: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    opacity: 0.55;
+    cursor: pointer;
+    padding: 6px 8px;
+    letter-spacing: 0.04em;
+    background: none;
+    border: none;
+    color: var(--text);
   }
 
   .result-name {
     font-family: 'Nanum Myeongjo', serif;
     font-size: 24px;
     font-weight: 700;
+    margin-top: 32px;
     background: linear-gradient(135deg, var(--pink), var(--gold));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -575,6 +617,36 @@
   .flip-back  .flip-hint { color:rgba(184,150,12,0.38); }
   /* 타로 눈 SVG */
   .tarot-eye { width:110px; height:68px; margin:2px 0; }
+
+  /* 이미지 저장 버튼 */
+  .save-img-btn {
+    width: 100%;
+    margin: 16px 0 8px;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1.5px solid var(--pink);
+    background: transparent;
+    color: var(--pink);
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    transition: all 0.2s;
+  }
+  .save-img-btn:active {
+    background: var(--pink);
+    color: white;
+    transform: scale(0.98);
+  }
+  .night-mode .save-img-btn {
+    border-color: var(--neon-pink);
+    color: var(--neon-pink);
+  }
+  .night-mode .save-img-btn:active {
+    background: var(--neon-pink);
+    color: white;
+  }
 
   /* 텍스트 리포트 */
   .report-block {
@@ -984,21 +1056,6 @@
   .modal-cta:hover { transform: translateY(-2px); }
   .modal-cta:disabled { opacity: 0.4; cursor: default; transform: none; }
 
-  /* 뒤로가기 */
-  .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    opacity: 0.45;
-    cursor: pointer;
-    padding: 8px 0 0 0;
-    letter-spacing: 0.08em;
-    background: none;
-    border: none;
-    color: var(--text);
-  }
-
   @keyframes fadeSlideDown {
     from { opacity: 0; transform: translateY(-10px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -1029,6 +1086,8 @@
     box-shadow: 0 4px 24px rgba(255,45,120,0.5), 0 0 40px rgba(0,207,255,0.2);
   }
 </style>
+  <!-- html2canvas: 이미지 저장 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -1072,8 +1131,8 @@
     <div class="form-row">
       <label class="form-label">성별</label>
       <div class="gender-row">
-        <button class="gender-btn" onclick="selectGender(this, '여성')">🌸 여성</button>
-        <button class="gender-btn" onclick="selectGender(this, '남성')">🌊 남성</button>
+        <button class="gender-btn" onclick="selectGender(this, '여성')">♀ 여성</button>
+        <button class="gender-btn" onclick="selectGender(this, '남성')">♂ 남성</button>
       </div>
     </div>
 
@@ -1233,6 +1292,11 @@
     </button>
   </div>
 
+  <!-- 이미지 저장 버튼 -->
+  <button class="save-img-btn" onclick="saveResultImage('page-result')">
+    📸 내 분석 결과 이미지로 저장
+  </button>
+
 </div>
 
 <!-- ══════════════════════════════════ PAGE 3: 궁합 결과 ══════════════════════════════════ -->
@@ -1300,6 +1364,10 @@
   </div>
   <div id="ai-report-content"></div>
 
+  <!-- 이미지 저장 버튼 -->
+  <button class="save-img-btn" id="compat-save-btn" onclick="saveResultImage('page-compat')" style="display:none;">
+    📸 궁합 결과 이미지로 저장
+  </button>
 
 </div>
 
@@ -1389,8 +1457,8 @@
       <div class="form-row">
         <label class="form-label">성별</label>
         <div class="gender-row">
-          <button class="gender-btn" id="p-gender-f" onclick="selectPartnerGender('여성')">🌸 여성</button>
-          <button class="gender-btn" id="p-gender-m" onclick="selectPartnerGender('남성')">🌊 남성</button>
+          <button class="gender-btn" id="p-gender-f" onclick="selectPartnerGender('여성')">♀ 여성</button>
+          <button class="gender-btn" id="p-gender-m" onclick="selectPartnerGender('남성')">♂ 남성</button>
         </div>
       </div>
 
@@ -2392,7 +2460,10 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 function handleModalClick(e) {
-  if(e.target === document.getElementById('compatModal')) closeModal();
+  // date/time input 조작 중엔 모달 닫히지 않게
+  const tag = e.target.tagName.toLowerCase();
+  if (tag === 'input' || tag === 'select' || tag === 'option') return;
+  if (e.target === document.getElementById('compatModal')) closeModal();
 }
 function selectPlan(plan) {
   selectedPlan = plan;
@@ -2640,18 +2711,29 @@ async function generateCompatReport(info) {
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': CLAUDE_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
       body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:4000, messages:[{role:'user',content:prompt}] })
     });
-    if (!res.ok) throw new Error('API error');
+    if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
     const text = data.content?.[0]?.text || '';
     clearInterval(lt); loading.style.display='none';
     content.innerHTML = text.replace(/\*\*(.*?)\*\*/g,'$1');
+    // 저장 버튼 노출
+    const saveBtn = document.getElementById('compat-save-btn');
+    if (saveBtn) saveBtn.style.display = 'block';
   } catch(e) {
     // API 실패 시 → 내장 텍스트로 자동 생성
     clearInterval(lt); loading.style.display='none';
     content.innerHTML = buildFallbackReport(info);
+    // 저장 버튼 노출
+    const saveBtn = document.getElementById('compat-save-btn');
+    if (saveBtn) saveBtn.style.display = 'block';
   }
 }
 
@@ -2976,6 +3058,52 @@ function goBackToResult() {
   document.getElementById('page-compat').classList.remove('active');
   document.getElementById('page-result').classList.add('active');
   window.scrollTo(0,0);
+}
+
+// ── Claude API 키 설정 ──
+// ⚠️ 아래에 본인의 Anthropic API 키를 입력해줘요
+cconst CLAUDE_API_KEY = 'sk-ant-api03-여기에붙여넣기';
+
+// ── 이미지 저장 ──
+async function saveResultImage(pageId) {
+  const btn = event.target;
+  const origText = btn.textContent;
+  btn.textContent = '⏳ 저장 중...';
+  btn.disabled = true;
+
+  try {
+    const el = document.getElementById(pageId);
+    const canvas = await html2canvas(el, {
+      backgroundColor: document.body.classList.contains('night-mode') ? '#0D0520' : '#FFF5F8',
+      scale: 2,           // 고해상도
+      useCORS: true,
+      logging: false,
+      scrollY: 0,
+      windowWidth: el.scrollWidth,
+      height: el.scrollHeight,
+    });
+
+    // 이미지 다운로드
+    const link = document.createElement('a');
+    const name = pageId === 'page-result' ? '나의_우주_분석' : '우리의_인연';
+    link.download = `${name}_${new Date().toLocaleDateString('ko-KR').replace(/\./g,'').replace(/ /g,'')}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    // iOS에서 다운로드 안 될 때 → 새 탭으로 열기
+    setTimeout(() => {
+      btn.textContent = '✅ 저장 완료!';
+      setTimeout(() => {
+        btn.textContent = origText;
+        btn.disabled = false;
+      }, 2000);
+    }, 500);
+
+  } catch(e) {
+    console.error('이미지 저장 실패:', e);
+    btn.textContent = '⚠️ 저장 실패 — 다시 시도해줘';
+    btn.disabled = false;
+  }
 }
 
 function goBack() {
