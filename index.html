@@ -2717,7 +2717,7 @@ async function generateCompatReport(info) {
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true',
       },
-      body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:4000, messages:[{role:'user',content:prompt}] })
+      body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:8000, messages:[{role:'user',content:prompt}] })
     });
     if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
@@ -2738,15 +2738,151 @@ async function generateCompatReport(info) {
 }
 
 function buildPrompt(info) {
-  const base = `당신은 동양 숙요점(27숙)과 서양 별자리를 결합한 궁합 전문가입니다. MZ 언니 스타일(반말, 솔직, 직설, 공감, 이모지 적절히)로 작성해주세요.
+  const base = `당신은 동양 숙요점(27숙)과 서양 별자리를 결합한 최고의 궁합 전문가입니다.
 
-[나] ${info.myName} / ${info.myZodiac}(${info.myKeyword}) / 숙요점: ${info.mySugyo}(${info.mySugyoDesc})
-[상대] ${info.pName} / ${info.pZodiac}(${info.pKeyword}) / 숙요점: ${info.pSugyo}(${info.pSugyoDesc})
-관계: ${info.pRel} / 숙요점관계: ${info.relType}(${info.relDesc}) / 궁합점수: ${info.totalScore}점`;
+【두 사람 정보】
+- 나: ${info.myName} / ${info.myZodiac}(${info.myKeyword}) / 숙요점: ${info.mySugyo}(${info.mySugyoDesc})
+- 상대: ${info.pName} / ${info.pZodiac}(${info.pKeyword}) / 숙요점: ${info.pSugyo}(${info.pSugyoDesc})
+- 관계: ${info.pRel} / 숙요점 관계: ${info.relType}(${info.relDesc}) / 궁합점수: ${info.totalScore}점
 
-  if (info.plan==='monthly') return base+`\n\n${info.timeInfo} 두 사람 관계 월운을 1000자 이상으로 분석해줘. ①이달 전체 기운 ②주목할 날짜와 사건(좋은날/조심할날) ③구체적 시나리오 ④행동 가이드. HTML 형식: <div class="report-block"><div class="report-tag">제목</div><div class="report-text">내용</div></div>`;
-  if (info.plan==='yearly') return base+`\n\n${info.timeInfo} 두 사람 관계를 3000자 이상으로 분석해줘. ①연간 총운 ②1월~12월 월별 예측(각 150자이상) ③올해 변곡점 ④연간 전략. HTML 형식 사용.`;
-  return base+`\n\n두 사람 전체궁합을 5000자 이상으로 분석해줘. ①전생인연 ②현생의 끌림 ③잘맞는부분 ④계속부딪히는부분 ⑤향후10년예측(1년단위) ⑥위기극복해결책 ⑦최종총평. HTML 형식 사용.`;
+【말투 규칙 — 반드시 지켜줘】
+- MZ 언니 스타일: 반말, 솔직, 직설, 공감, 이모지 자연스럽게
+- "있어요/해요" 절대 금지 → "있어/해" 반말로만
+- 딱딱한 표현 금지. 친한 언니가 솔직하게 털어놓는 말투
+- 예시는 최대한 구체적으로 (실제 상황, 대화 예시, 날짜 등)
+
+【HTML 출력 형식】
+각 섹션: <div class="report-block"><div class="report-tag">섹션제목</div><div class="report-text">내용</div></div>
+탭카드: <div class="tab-cards"><div class="tab-card good"><div class="tab-card-label">✦ 제목</div><div>내용</div></div><div class="tab-card bad"><div class="tab-card-label">◆ 제목</div><div>내용</div></div></div>`;
+
+  if (info.plan === 'monthly') {
+    return base + `
+
+【요청】 ${info.timeInfo} ${info.myName}과 ${info.pName}의 관계 월운 분석
+반드시 1500자 이상 작성. 아래 모든 섹션 빠짐없이 작성해줘.
+
+① 🔴 ${info.timeInfo} 관계 흐름 총정리 (200자 이상)
+- 이달 두 사람 관계가 전반적으로 어떻게 흘러가는지 한눈에
+- ${info.relType} 에너지가 이달 어떻게 작용하는지
+- 숙요점과 별자리 관점 모두 포함
+
+② 🌙 숙요점으로 보는 이달 에너지 (300자 이상)
+- ${info.mySugyo}와 ${info.pSugyo}의 이달 에너지 흐름
+- 구체적으로 어떤 상황에서 이 에너지가 느껴지는지 예시 포함
+- 예: "카톡 할 때 ${info.pName}이 답장이 늦어지면 이건 ${info.pSugyo} 에너지가 내면으로 향하는 거야, 오해하지 마"
+
+③ ☀️ 별자리로 보는 이달 에너지 (200자 이상)
+- ${info.myZodiac}과 ${info.pZodiac}의 이달 상호작용
+- 구체적 상황 예시 포함
+
+④ 📅 날짜별 에너지 흐름 (400자 이상)
+- 상순(1~10일): 구체적으로 어떤 일이 생길 수 있는지, 좋은 날 나쁜 날
+- 중순(11~20일): 구체적으로
+- 하순(21~말일): 구체적으로
+- 각 시기마다 "이런 상황이 오면 이렇게 해" 같은 실전 팁 포함
+
+⑤ 💫 이달 구체적 시나리오 (300자 이상)
+- 긍정 시나리오: 실제로 어떤 일이 어떻게 펼쳐질 수 있는지 스토리텔링
+- 주의 시나리오: 어떤 상황에서 문제가 생길 수 있는지 구체적으로
+- 예: "만약 이달 중순에 ${info.pName}이 갑자기 연락이 뜸해지면, 그건 ~때문이야. 이럴 때 ${info.myName}이 ~하면 돼"
+
+⑥ 💡 이달 행동 가이드 (200자 이상)
+- 구체적으로 언제 어떻게 행동하면 좋은지
+- 해야 할 말, 하지 말아야 할 말
+- D-Day: 이달 중 가장 중요한 날이나 타이밍 제시`;
+  }
+
+  if (info.plan === 'yearly') {
+    return base + `
+
+【요청】 ${info.timeInfo} ${info.myName}과 ${info.pName}의 연간 인연 리포트
+반드시 4000자 이상 작성. 아래 모든 섹션 빠짐없이, 각 섹션 충분히 길게 작성해줘.
+
+① 🔴 ${info.timeInfo} 관계 흐름 총정리 (400자 이상)
+- 올해 두 사람 관계의 큰 그림과 방향
+- 숙요점 ${info.relType} 에너지가 올해 전체에 어떻게 영향을 주는지
+- 올해 이 관계의 핵심 테마를 한마디로
+
+② 🌙 숙요점 연간 총운 (300자 이상)
+- ${info.mySugyo}와 ${info.pSugyo}가 올해 어떻게 상호작용하는지
+- 올해 특히 이 관계에서 주의해야 할 숙요점 에너지
+
+③ ☀️ 별자리 연간 총운 (300자 이상)
+- ${info.myZodiac}과 ${info.pZodiac}의 올해 에너지 흐름
+
+④ 📅 월별 상세 예측 (각 월 최소 200자 이상, 총 2400자 이상)
+1월부터 12월까지 각각:
+- 이달의 에너지와 두 사람 관계 흐름
+- 구체적으로 어떤 일이 생길 수 있는지 (예: "3월엔 ${info.pName}이 먼저 진지한 이야기를 꺼낼 수 있어. 그 자리에서 ~하면 좋아")
+- 좋은 달/조심해야 할 달 표시
+- 각 달마다 실전 팁 1개 이상
+
+⑤ 🔥 올해 핵심 변곡점 3개 (400자 이상)
+- 올해 관계에서 가장 결정적인 순간 3개를 구체적으로
+- 각 변곡점마다 "이 순간을 어떻게 넘기느냐"에 따라 어떻게 달라지는지
+
+⑥ 💡 연간 전략 & 해결책 (400자 이상)
+- 올해 이 관계를 잘 가져가기 위한 구체적인 전략
+- 숙요점 에너지 활용법
+- 별자리 에너지 활용법
+- 하지 말아야 할 것들`;
+  }
+
+  return base + `
+
+【요청】 ${info.myName}과 ${info.pName}의 전체 궁합 완전 분석 리포트
+반드시 7000자 이상 작성. 아래 모든 섹션 빠짐없이, 각 섹션 충분히 풍부하게 작성해줘.
+구체적인 상황 예시, 대화 예시, 실제 스토리텔링을 최대한 많이 넣어줘.
+
+① 🔴 전체 관계 흐름 총정리 (500자 이상)
+- 두 사람 관계의 본질과 큰 그림
+- 숙요점 ${info.relType} 에너지가 이 관계 전체에 미치는 영향
+- 이 인연을 한마디로 정의한다면
+
+② 🌟 전생의 인연 (500자 이상)
+- 두 사람이 전생에서 어떤 관계였는지 구체적으로
+- ${info.mySugyo}와 ${info.pSugyo}의 전생 에너지
+- 이번 생에 왜 다시 만났는지, 서로에게 어떤 과제를 가져왔는지
+- 처음 만났을 때 느꼈을 법한 감정 묘사 포함
+
+③ 💫 현생의 끌림 — 왜 이 사람인가 (500자 이상)
+- 두 사람이 서로에게 끌리는 진짜 이유를 숙요점+별자리로 분석
+- 구체적인 상황 예시: "예를 들어 ${info.pName}이 ~할 때 ${info.myName}은 왜 설레는지"
+- 서로 어떤 부분에서 자기가 가지지 못한 것을 보는지
+
+④ ✨ 잘 맞는 부분 (600자 이상)
+- 구체적으로 어떤 상황에서 시너지가 나는지 예시와 함께
+- 함께할 때 가장 행복한 순간들 묘사
+- 숙요점 시너지 + 별자리 시너지 각각 분석
+- 예: "두 사람이 여행을 가면 ~한 방식으로 잘 맞아. 왜냐면 ~이기 때문이야"
+
+⑤ ⚡ 계속 부딪히는 부분 (600자 이상)
+- 반복되는 갈등 패턴을 구체적으로
+- 실제로 어떤 상황에서 싸우게 되는지 시나리오로
+- 예: "${info.myName}이 ~하면 ${info.pName}은 ~하게 반응해. 그러면 ${info.myName}은 또 ~해서 싸움이 커져"
+- 이 패턴의 근본 원인 분석
+
+⑥ 🔮 향후 10년 예측 (2000자 이상)
+올해부터 10년간 1년 단위로 각각:
+- 그 해의 두 사람 관계 에너지와 키워드
+- 구체적으로 어떤 일이 생길 수 있는지
+- 그 해 관계에서 가장 중요한 것
+- 좋은 해/도전적인 해 표시
+- 특히 결정적인 해는 더 자세히 (관계가 크게 변하는 시점)
+
+⑦ 💡 위기 극복 해결책 (800자 이상)
+- 이 관계에서 반드시 알아야 할 핵심 해결책
+- 단기(지금 당장), 중기(6개월~2년), 장기(2년 이후) 전략 각각
+- 숙요점 에너지 활용 구체적 방법
+- 별자리 에너지 활용 구체적 방법
+- 갈등 상황에서 써먹을 수 있는 실전 대화법 예시
+- 예: "이런 상황이 오면 '~'라고 말해봐. 이 말이 ${info.pZodiac}인 ${info.pName}한테 특히 잘 먹혀"
+
+⑧ 🌟 최종 총평 (500자 이상)
+- 이 인연을 점수와 함께 총정리
+- 솔직하게: 이 관계가 장기적으로 어디까지 갈 수 있는지
+- 이 인연을 유지하려면 두 사람 각각 뭘 바꿔야 하는지
+- 마지막으로 ${info.myName}에게 전하는 한마디`;
 }
 
 // ── fallback 리포트 (API 없을 때) ──
@@ -3062,8 +3198,7 @@ function goBackToResult() {
 
 // ── Claude API 키 설정 ──
 // ⚠️ 아래에 본인의 Anthropic API 키를 입력해줘요
-cconst CLAUDE_API_KEY = 'sk-ant-api03-여기에붙여넣기';
-
+const CLAUDE_API_KEY = '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';
 // ── 이미지 저장 ──
 async function saveResultImage(pageId) {
   const btn = event.target;
