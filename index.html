@@ -1335,36 +1335,88 @@
     </div>
   </div>
 
-  <!-- 궁합 점수 -->
-  <div class="section-card" style="padding:20px;">
-    <div class="section-label">✦ 궁합 점수</div>
-    <div id="compat-score-bars"></div>
-    <div style="text-align:center; margin-top:16px;">
-      <div style="font-size:11px; opacity:0.5; letter-spacing:0.1em; margin-bottom:6px;">TOTAL SCORE</div>
-      <div id="compat-total-score" style="font-family:'Cinzel Decorative',serif; font-size:42px; font-weight:700; background:linear-gradient(135deg,var(--pink),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;"></div>
+  <!-- 데이모드: 별자리 궁합 점수 -->
+  <div class="section-card" id="day-score-card" style="padding:20px;">
+    <div class="section-label">☀️ 별자리 궁합 점수</div>
+    <div id="zodiac-score-bar"></div>
+    <div style="text-align:center; margin-top:12px;">
+      <div style="font-size:11px; opacity:0.5; letter-spacing:0.1em; margin-bottom:4px;">ZODIAC SCORE</div>
+      <div id="zodiac-score-num" style="font-family:'Cinzel Decorative',serif; font-size:38px; font-weight:700; background:linear-gradient(135deg,var(--pink),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;"></div>
       <div style="font-size:11px; opacity:0.5; margin-top:2px;">/ 100</div>
     </div>
   </div>
 
-  <!-- 숙요점 배지 -->
-  <div class="report-block">
-    <div class="report-tag">🌙 숙요점 관계</div>
-    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+  <!-- 나이트모드: 숙요점 궁합 점수 -->
+  <div class="section-card" id="night-score-card" style="padding:20px; display:none;">
+    <div class="section-label">🌙 숙요점 궁합 점수</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
       <span id="rel-atob-badge" style="font-size:10px; padding:4px 10px; border-radius:10px; border:1px solid var(--border);"></span>
       <span id="rel-btoa-badge" style="font-size:10px; padding:4px 10px; border-radius:10px; border:1px solid var(--border);"></span>
     </div>
-  </div>
-
-  <!-- AI 리포트 -->
-  <div id="ai-loading" style="text-align:center; padding:50px 20px; display:none;">
-    <div style="font-size:40px; animation:float 2s ease-in-out infinite;">🔮</div>
-    <div style="font-size:13px; margin-top:16px; opacity:0.6; letter-spacing:0.05em; line-height:1.8;" id="ai-loading-text">
-      별자리와 숙요점을 읽는 중...<br>잠시만 기다려줘 ✦
+    <div id="sugyo-score-bar"></div>
+    <div style="text-align:center; margin-top:12px;">
+      <div style="font-size:11px; opacity:0.5; letter-spacing:0.1em; margin-bottom:4px;">SUGYO SCORE</div>
+      <div id="sugyo-score-num" style="font-family:'Cinzel Decorative',serif; font-size:38px; font-weight:700; background:linear-gradient(135deg,#AA00FF,#FF2D78); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;"></div>
+      <div style="font-size:11px; opacity:0.5; margin-top:2px;">/ 100</div>
     </div>
   </div>
-  <div id="ai-report-content"></div>
 
-  <!-- 이미지 저장 버튼 -->
+  <!-- 데이모드: 별자리 궁합 리포트 -->
+  <div id="compat-day-report">
+    <div id="ai-loading-day" style="text-align:center; padding:40px 20px; display:none;">
+      <div style="font-size:36px; animation:float 2s ease-in-out infinite;">☀️</div>
+      <div style="font-size:13px; margin-top:12px; opacity:0.6; line-height:1.8;" id="ai-loading-day-text">별자리 하우스 궁합 분석 중...<br>잠시만 기다려줘 ✦</div>
+    </div>
+    <div id="ai-report-day-content"></div>
+  </div>
+
+  <!-- 나이트모드: 숙요점 궁합 리포트 -->
+  <div id="compat-night-report" style="display:none;">
+    <div id="ai-loading-night" style="text-align:center; padding:40px 20px; display:none;">
+      <div style="font-size:36px; animation:float 2s ease-in-out infinite;">🌙</div>
+      <div style="font-size:13px; margin-top:12px; opacity:0.6; line-height:1.8;" id="ai-loading-night-text">숙요점 궁합 분석 중...<br>잠시만 기다려줘 ✦</div>
+    </div>
+    <div id="ai-report-night-content"></div>
+  </div>
+
+  <!-- 최종 궁합 결과 버튼 (둘 다 로드 후 표시) -->
+  <div id="final-compat-btn-wrap" style="display:none; margin:20px 0;">
+    <button class="modal-cta" onclick="showFinalCompat()" style="background:linear-gradient(135deg,var(--pink),#AA00FF);">
+      🔮 최종 궁합 결과 보기
+    </button>
+  </div>
+
+  <!-- 최종 궁합 결과 -->
+  <div id="final-compat-result" style="display:none;">
+    <div class="report-block" style="border:2px solid var(--pink);">
+      <div class="report-tag" style="background:linear-gradient(135deg,var(--pink),#AA00FF);">✦ 최종 궁합 결과</div>
+      <!-- 두 점수 표시 -->
+      <div style="display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap;">
+        <div style="flex:1; text-align:center; padding:12px; background:rgba(255,183,197,0.1); border-radius:12px; min-width:100px;">
+          <div style="font-size:10px; opacity:0.6; margin-bottom:4px;">☀️ 별자리 궁합</div>
+          <div id="final-zodiac-score" style="font-size:28px; font-weight:700; color:var(--pink);"></div>
+          <div style="font-size:10px; opacity:0.4;">/ 100</div>
+        </div>
+        <div style="flex:1; text-align:center; padding:12px; background:rgba(170,0,255,0.08); border-radius:12px; min-width:100px;">
+          <div style="font-size:10px; opacity:0.6; margin-bottom:4px;">🌙 숙요점 궁합</div>
+          <div id="final-sugyo-score" style="font-size:28px; font-weight:700; color:#AA00FF;"></div>
+          <div style="font-size:10px; opacity:0.4;">/ 100</div>
+        </div>
+        <div style="flex:1; text-align:center; padding:12px; background:rgba(255,215,0,0.08); border-radius:12px; min-width:100px;">
+          <div style="font-size:10px; opacity:0.6; margin-bottom:4px;">🔮 TOTAL</div>
+          <div id="final-total-score" style="font-family:'Cinzel Decorative',serif; font-size:28px; font-weight:700; background:linear-gradient(135deg,var(--pink),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;"></div>
+          <div style="font-size:10px; opacity:0.4;">/ 100</div>
+        </div>
+      </div>
+      <!-- AI 공통분모 리포트 -->
+      <div id="final-compat-loading" style="text-align:center; padding:20px; display:none;">
+        <div style="font-size:13px; opacity:0.6;">✦ 별자리 × 숙요점 공통분모 추출 중...</div>
+      </div>
+      <div id="final-compat-content"></div>
+    </div>
+  </div>
+
+  <!-- 이미지 저장 -->
   <button class="save-img-btn" id="compat-save-btn" onclick="saveResultImage('page-compat')" style="display:none;">
     📸 궁합 결과 이미지로 저장
   </button>
@@ -1756,12 +1808,21 @@ function renderTabCards(containerId, good, bad, solution) {
 
 function updateReportMode() {
   const isNight = document.body.classList.contains('night-mode');
+  // 개인 분석
   const dayBlock   = document.getElementById('report-day');
   const nightBlock = document.getElementById('report-night');
-  if (dayBlock && nightBlock) {
-    dayBlock.style.display   = isNight ? 'none'  : 'block';
-    nightBlock.style.display = isNight ? 'block' : 'none';
-  }
+  if (dayBlock)   dayBlock.style.display   = isNight ? 'none'  : 'block';
+  if (nightBlock) nightBlock.style.display = isNight ? 'block' : 'none';
+  // 궁합 점수 카드
+  const dayScore   = document.getElementById('day-score-card');
+  const nightScore = document.getElementById('night-score-card');
+  if (dayScore)   dayScore.style.display   = isNight ? 'none'  : 'block';
+  if (nightScore) nightScore.style.display = isNight ? 'block' : 'none';
+  // 궁합 리포트
+  const dayReport   = document.getElementById('compat-day-report');
+  const nightReport = document.getElementById('compat-night-report');
+  if (dayReport)   dayReport.style.display   = isNight ? 'none'  : 'block';
+  if (nightReport) nightReport.style.display = isNight ? 'block' : 'none';
 }
 
 function toggleMode() {
@@ -2400,90 +2461,201 @@ function goToResult() {
 
 // ── 개인 분석 AI 리포트 생성 ──
 async function generatePersonalReport(name, z, s, birth, isLunar) {
-  // 출생 연도 추출 (하우스 계산용)
-  const birthYear = birth ? parseInt(birth.split('-')[0]) : 1990;
-  const birthMonth = birth ? parseInt(birth.split('-')[1]) : 1;
 
-  // 데이모드 프롬프트 — 별자리 하우스 해석
-  const dayPrompt = `당신은 서양 점성술 전문가입니다. 아래 사람의 별자리를 하우스 관점에서 분석해주세요.
+  // 데이모드 프롬프트 — 별자리 하우스 + 애스펙트 해석
+  const dayPrompt = `당신은 서양 점성술 전문가입니다.
 
+【분석 대상】
 이름: ${name}
 태양별자리: ${z.name} (${z.keyword})
-출생: ${birth || '정보없음'}
+출생일: ${birth || '정보없음'}
 
-【말투 규칙】
-- MZ 언니 스타일: 반말, 솔직, 직설, 공감, 이모지 자연스럽게
-- "있어요/해요" 절대 금지 → 반말로만
-- 딱딱한 표현 금지. 친한 언니가 솔직하게 털어놓는 말투
-- 구체적인 상황 예시를 많이 넣어줘
+【핵심 말투 규칙 — 반드시 지켜줘】
+1. 반말만 사용. "있어요/해요/이에요" 절대 금지
+2. 주어+서술어 문장 구조 정확하게. "처녀자리는", "처녀자리가" (조사 정확히)
+3. 문장 끝을 "~야", "~어", "~거든", "~잖아"로 자연스럽게
+4. MZ 언니가 친구한테 솔직하게 털어놓는 말투
+5. 이모지 자연스럽게 사용
+6. 구체적 상황 예시 반드시 포함
 
-【요청】 ${name}의 ${z.name} 별자리 하우스 분석 — 반드시 1200자 이상 작성
+【요청】 ${name}의 ${z.name} 하우스별 심층 분석 — 반드시 2000자 이상 작성
 
-아래 섹션을 HTML로 출력해줘:
+아래 섹션 순서대로 HTML로 출력해줘.
+각 탭카드 내용은 최소 200자 이상, 구체적 상황 예시 2개 이상 포함.
+
 <div class="tab-cards">
-  <div class="tab-card good">
-    <div class="tab-card-label">✦ 1하우스 · 자아와 외모</div>
-    <div>분석 내용 (150자 이상)</div>
-  </div>
-  ... 이런 식으로
+
+<div class="tab-card good">
+<div class="tab-card-label">✦ 1하우스 · 외면의 나 — 남들이 보는 ${name}</div>
+<div>
+${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
+- 첫인상과 겉으로 드러나는 이미지
+- 남들 눈에 ${name}은 어떤 사람으로 보이는지
+- ${z.name} 특유의 외적 에너지와 분위기
+- 실제 상황 예시 2개 이상 (예: "처음 만나는 자리에서 ${name}은 보통 ~하게 행동해. 왜냐면 ~이기 때문이야")
+- 1하우스가 다른 하우스(특히 7하우스)와 어떻게 상호작용하는지
+</div>
 </div>
 
-포함할 하우스 (각 100자 이상):
-- 1하우스: 자아, 외모, 첫인상 — ${z.name}이 1하우스에 미치는 영향
-- 4하우스: 가정, 뿌리, 감정적 기반
-- 5하우스: 연애, 창의성, 즐거움
-- 7하우스: 연애/결혼 파트너십 — ${z.name}이 사랑에서 어떤 사람인지
-- 10하우스: 커리어, 사회적 이미지
-- 마지막으로 "종합" 섹션: ${z.name}인 ${name}의 전체적인 성격 장단점과 인간관계 태도 (300자 이상)
+<div class="tab-card good">
+<div class="tab-card-label">✦ 3·9하우스 · 생각과 소통 방식</div>
+<div>
+- ${z.name}의 사고방식과 커뮤니케이션 스타일
+- 대화할 때 나타나는 특징들
+- 정보를 처리하고 표현하는 방식
+- 실제 대화 예시 포함 (예: "논쟁이 생기면 ${name}은 보통 '~'라고 말하는 편이야")
+</div>
+</div>
 
-각 하우스마다 구체적인 상황 예시를 반드시 넣어줘.
-예: "7하우스에서 ${z.name}은 연애할 때 ~한 경향이 있어. 예를 들어 상대방이 ~하면 ${z.name}은 보통 ~하게 반응하거든"`;
+<div class="tab-card good">
+<div class="tab-card-label">✦ 4·12하우스 · 내면 깊숙한 곳</div>
+<div>
+- ${z.name}의 감정적 기반과 무의식
+- 혼자 있을 때의 진짜 모습
+- 가정과 뿌리에 대한 태도
+- 4하우스와 12하우스의 애스펙트로 보이는 숨겨진 성격
+- 구체적 상황 예시 포함
+</div>
+</div>
 
-  // 나이트모드 프롬프트 — 숙요점 해석
-  const nightPrompt = `당신은 동양 숙요점(27숙) 전문가입니다. 아래 사람의 숙요점을 깊이 분석해주세요.
+<div class="tab-card good">
+<div class="tab-card-label">✦ 5·8하우스 · 연애 스타일과 끌림</div>
+<div>
+- ${z.name}의 연애 방식과 사랑 표현법
+- 어떤 사람에게 끌리는지
+- 연애할 때 나타나는 행동 패턴
+- 5하우스(로맨스)와 8하우스(깊은 결합)의 상호작용
+- 구체적 연애 상황 예시 2개 이상 (예: "좋아하는 사람이 생기면 ${name}은 ~하게 행동해. 반대로 상대가 ~하면 바로 ~하는 경향이 있어")
+- 잘 맞는 상대 유형과 피해야 할 유형
+</div>
+</div>
 
+<div class="tab-card good">
+<div class="tab-card-label">✦ 7·11하우스 · 파트너십과 인간관계</div>
+<div>
+- ${z.name}이 원하는 이상적인 파트너 유형
+- 관계에서 나타나는 패턴
+- 친구 관계와 연인 관계에서의 차이
+- 7하우스(파트너십)와 11하우스(사회적 관계)의 애스펙트
+- 구체적 관계 예시 포함
+</div>
+</div>
+
+<div class="tab-card good">
+<div class="tab-card-label">✦ 10하우스 · 사회적 이미지와 커리어</div>
+<div>
+- 남들이 보는 ${name}의 사회적 모습
+- 일할 때 나타나는 특징
+- 커리어에서 빛나는 순간들
+- 구체적 상황 예시 포함
+</div>
+</div>
+
+<div class="tab-card bad">
+<div class="tab-card-label">◆ 솔직히 말하면 — ${z.name}의 그림자</div>
+<div>
+- ${z.name}이 무의식적으로 반복하는 부정적 패턴
+- 남들을 힘들게 하는 행동들
+- 본인도 모르게 자기 자신을 힘들게 하는 부분
+- 구체적 상황 예시 2개 이상
+</div>
+</div>
+
+<div class="tab-card solution">
+<div class="tab-card-label">→ 하우스 애스펙트 종합 — ${name}에게 전하는 말</div>
+<div>
+- 각 하우스들이 서로 어떻게 연결되어 ${name}만의 개성을 만드는지
+- 가장 강하게 작용하는 하우스 조합
+- ${z.name}으로 태어난 ${name}의 진짜 강점
+- 지금 당장 써먹을 수 있는 실전 조언
+</div>
+</div>
+
+</div>`;
+
+  // 나이트모드 프롬프트 — 숙요점 심층 해석
+  const nightPrompt = `당신은 동양 숙요점(27숙) 전문가입니다.
+
+【분석 대상】
 이름: ${name}
 숙요점: ${s.name}
 특성: ${s.desc}
 
-【말투 규칙】
-- MZ 언니 스타일: 반말, 솔직, 직설, 공감, 이모지 자연스럽게
-- "있어요/해요" 절대 금지 → 반말로만
-- 구체적인 상황 예시를 많이 넣어줘
+【핵심 말투 규칙 — 반드시 지켜줘】
+1. 반말만 사용. "있어요/해요/이에요" 절대 금지
+2. 주어+조사 정확하게. "${s.name}은", "${s.name}의", "${s.name}이" (조사 정확히)
+3. MZ 언니가 친구한테 솔직하게 털어놓는 말투
+4. 이모지 자연스럽게 사용
+5. 구체적 상황 예시 반드시 포함
 
-【요청】 ${name}의 ${s.name} 숙요점 심층 분석 — 반드시 1200자 이상 작성
+【요청】 ${name}의 ${s.name} 숙요점 심층 분석 — 반드시 2000자 이상 작성
 
-아래 형식으로 HTML 출력:
+각 탭카드 내용은 최소 250자 이상, 구체적 상황 예시 2개 이상 포함.
+
 <div class="tab-cards">
-  <div class="tab-card good">
-    <div class="tab-card-label">✦ ${s.name}의 빛나는 기운</div>
-    <div>내용</div>
-  </div>
-  <div class="tab-card bad">
-    <div class="tab-card-label">◆ 솔직히 말하면</div>
-    <div>내용</div>
-  </div>
-  <div class="tab-card solution">
-    <div class="tab-card-label">→ 관계에서의 태도</div>
-    <div>내용</div>
-  </div>
+
+<div class="tab-card good">
+<div class="tab-card-label">✦ ${s.name}의 본질 — 이 숙요점을 타고난 사람</div>
+<div>
+- ${s.name}이 가진 우주적 에너지의 본질
+- 이 숙요점을 타고난 사람이 세상을 바라보는 방식
+- ${s.name}만의 독보적인 강점과 재능
+- 구체적 상황 예시 2개 이상
+- 이 에너지가 일상에서 어떻게 드러나는지 (예: "${name}이 새로운 상황을 만나면 ~하게 반응해")
+</div>
 </div>
 
-포함할 내용 (각 섹션 200자 이상):
-① ${s.name}의 에너지와 기운 — 이 숙요점을 타고난 사람의 본질적인 성격
-② 이 숙요점이 내면에 미치는 영향 — 혼자 있을 때의 진짜 모습, 감정 처리 방식
-③ 인간관계에서의 태도 — 친구/연인/가족에게 어떻게 행동하는지 구체적 예시
-④ 장점과 재능 — 이 숙요점만이 가진 독보적인 강점
-⑤ 단점과 주의할 것 — 무의식적으로 반복하는 패턴
-⑥ 성장 포인트 — 이 숙요점의 에너지를 잘 쓰려면
+<div class="tab-card good">
+<div class="tab-card-label">✦ 내면의 ${name} — 혼자 있을 때의 진짜 모습</div>
+<div>
+- ${s.name} 에너지가 내면에 미치는 영향
+- 감정을 처리하는 방식
+- 혼자 있을 때 주로 하는 생각들
+- 외부에 잘 드러내지 않는 내면의 모습
+- 구체적 상황 예시 (예: "${name}이 상처받으면 보통 ~하게 반응해. 겉으론 ~해 보여도 실제론 ~이거든")
+</div>
+</div>
 
-각 내용마다 구체적인 상황 예시 필수.
-예: "${s.name}인 사람은 친구가 갑자기 연락을 끊으면 ~하게 반응해. 보통 ~한 방식으로 대처하거든"`;
+<div class="tab-card good">
+<div class="tab-card-label">✦ 관계에서의 ${name} — 친구·연인·가족</div>
+<div>
+- ${s.name}이 인간관계에서 나타나는 방식
+- 친구한테는 어떤 사람인지
+- 연인한테는 어떤 사람인지
+- 가족 관계에서의 특징
+- 각 관계에서 구체적 행동 예시 2개 이상
+- 이 숙요점을 가진 사람이 관계에서 가장 빛나는 순간
+</div>
+</div>
+
+<div class="tab-card bad">
+<div class="tab-card-label">◆ 솔직히 말하면 — ${s.name}의 그림자</div>
+<div>
+- ${s.name} 에너지가 부정적으로 작용할 때
+- 무의식적으로 반복하는 패턴
+- 관계에서 상대방을 힘들게 하는 행동들
+- 본인도 모르게 자기 자신을 힘들게 하는 부분
+- 구체적 상황 예시 2개 이상 (예: "이런 상황이 오면 ${name}은 ~하게 반응하는데, 상대방 입장에선 ~하게 느껴져")
+</div>
+</div>
+
+<div class="tab-card solution">
+<div class="tab-card-label">→ ${name}에게 전하는 말</div>
+<div>
+- ${s.name} 에너지를 최대한 활용하는 방법
+- 지금 당장 써먹을 수 있는 실전 조언
+- 이 숙요점을 가진 사람이 행복해지려면
+- ${name}만의 강점을 키우는 방향
+- 마지막으로 한마디
+</div>
+</div>
+
+</div>`;
 
   // 병렬로 두 리포트 동시 생성
   const [dayResult, nightResult] = await Promise.allSettled([
-    CLAUDE_API_KEY ? callClaudeAPI(dayPrompt) : Promise.resolve(buildPersonalFallback(name, z, s, 'day')),
-    CLAUDE_API_KEY ? callClaudeAPI(nightPrompt) : Promise.resolve(buildPersonalFallback(name, z, s, 'night')),
+    callClaudeAPI(dayPrompt, 4000),
+    callClaudeAPI(nightPrompt, 4000),
   ]);
 
   document.getElementById('dayCards').innerHTML =
@@ -2822,18 +2994,41 @@ function goToCompatResult() {
   badge.style.background=rel.good?'var(--pink)':'#888';
 
   drawFateThread(totalScore);
-  renderScoreBars(compat.finalScore,zodiacScore);
-  document.getElementById('compat-total-score').textContent=totalScore;
-  document.getElementById('rel-atob-badge').textContent=`${myName}→${pName}: ${compat.relAtoB.name}(${compat.relAtoB.type})`;
-  document.getElementById('rel-btoa-badge').textContent=`${pName}→${myName}: ${compat.relBtoA.name}(${compat.relBtoA.type})`;
+
+  // 데이모드: 별자리 점수
+  const zsBar = document.getElementById('zodiac-score-bar');
+  if(zsBar) zsBar.innerHTML = `<div style="height:8px;border-radius:4px;background:rgba(0,0,0,0.08);overflow:hidden;"><div style="height:100%;width:${zodiacScore}%;background:var(--pink);border-radius:4px;"></div></div>`;
+  const zsNum = document.getElementById('zodiac-score-num');
+  if(zsNum) zsNum.textContent = zodiacScore;
+
+  // 나이트모드: 숙요점 점수
+  const ssBar = document.getElementById('sugyo-score-bar');
+  if(ssBar) ssBar.innerHTML = `<div style="height:8px;border-radius:4px;background:rgba(0,0,0,0.08);overflow:hidden;"><div style="height:100%;width:${compat.finalScore}%;background:#AA00FF;border-radius:4px;"></div></div>`;
+  const ssNum = document.getElementById('sugyo-score-num');
+  if(ssNum) ssNum.textContent = compat.finalScore;
+
+  // 점수 저장 (최종 궁합용)
+  window._compatScores = { zodiac: zodiacScore, sugyo: compat.finalScore, total: totalScore };
+
+  const relAtob = document.getElementById('rel-atob-badge');
+  const relBtoa = document.getElementById('rel-btoa-badge');
+  if(relAtob) relAtob.textContent=`${myName}→${pName}: ${compat.relAtoB.name}(${compat.relAtoB.type})`;
+  if(relBtoa) relBtoa.textContent=`${pName}→${myName}: ${compat.relBtoA.name}(${compat.relBtoA.type})`;
+
+  // 최종 궁합 버튼/결과 초기화
+  const finalBtn = document.getElementById('final-compat-btn-wrap');
+  const finalRes = document.getElementById('final-compat-result');
+  if(finalBtn) finalBtn.style.display = 'none';
+  if(finalRes) finalRes.style.display = 'none';
 
   // 페이지 전환 먼저
   document.getElementById('page-result').classList.remove('active');
   document.getElementById('page-compat').classList.add('active');
   window.scrollTo(0,0);
+  updateReportMode();
 
-  // AI 리포트 생성
-  generateCompatReport({
+  // info 저장 (최종 궁합용)
+  window._compatInfo = {
     myName, pName, pRel, timeInfo,
     myZodiac: myZ.name, myKeyword: myZ.keyword,
     pZodiac: pZ.name, pKeyword: pZ.keyword,
@@ -2842,187 +3037,190 @@ function goToCompatResult() {
     relType: rel.name, relDesc: rel.desc, relGood: rel.good,
     totalScore, sugyoScore: compat.finalScore, zodiacScore,
     plan: selectedPlan,
-  });
+  };
+
+  // AI 리포트 생성
+  generateCompatReport(window._compatInfo);
 }
 
 // ── 궁합 리포트 생성 (API 우선, 실패 시 fallback) ──
 async function generateCompatReport(info) {
-  const loading = document.getElementById('ai-loading');
-  const content = document.getElementById('ai-report-content');
-  loading.style.display = 'block';
-  content.innerHTML = '';
+  // 데이 로딩 표시
+  const dayLoading = document.getElementById('ai-loading-day');
+  const dayContent = document.getElementById('ai-report-day-content');
+  const nightLoading = document.getElementById('ai-loading-night');
+  const nightContent = document.getElementById('ai-report-night-content');
 
-  const msgs = ['별자리와 숙요점을 읽는 중... ✦','두 사람의 에너지를 계산하는 중... 🌙','운명의 실을 엮는 중... 🔴','리포트를 완성하는 중... ✨'];
-  let mi = 0;
-  const lt = setInterval(()=>{ document.getElementById('ai-loading-text').innerHTML = msgs[mi++%msgs.length]+'<br>잠시만 기다려줘 ✦'; }, 2000);
+  if(dayLoading)   dayLoading.style.display = 'block';
+  if(nightLoading) nightLoading.style.display = 'block';
+  if(dayContent)   dayContent.innerHTML = '';
+  if(nightContent) nightContent.innerHTML = '';
 
-  const prompt = buildPrompt(info);
+  // 데이모드 프롬프트 — 서양별자리 하우스로 본 궁합
+  const dayPrompt = buildDayCompatPrompt(info);
+  // 나이트모드 프롬프트 — 숙요점으로 본 궁합
+  const nightPrompt = buildNightCompatPrompt(info);
 
-  try {
-    const text = await callClaudeAPI(prompt, 8000);
-    clearInterval(lt); loading.style.display='none';
-    content.innerHTML = text;
-    const saveBtn = document.getElementById('compat-save-btn');
-    if (saveBtn) saveBtn.style.display = 'block';
-  } catch(e) {
-    // API 실패 시 → 내장 텍스트로 자동 생성
-    clearInterval(lt); loading.style.display='none';
-    content.innerHTML = buildFallbackReport(info);
-    // 저장 버튼 노출
-    const saveBtn = document.getElementById('compat-save-btn');
-    if (saveBtn) saveBtn.style.display = 'block';
-  }
+  const [dayResult, nightResult] = await Promise.allSettled([
+    callClaudeAPI(dayPrompt, 8000),
+    callClaudeAPI(nightPrompt, 8000),
+  ]);
+
+  if(dayLoading) dayLoading.style.display = 'none';
+  if(nightLoading) nightLoading.style.display = 'none';
+
+  const dayText  = dayResult.status==='fulfilled'  ? dayResult.value  : buildFallbackReport(info);
+  const nightText = nightResult.status==='fulfilled' ? nightResult.value : buildFallbackReport(info);
+
+  if(dayContent)   dayContent.innerHTML  = dayText;
+  if(nightContent) nightContent.innerHTML = nightText;
+
+  // 둘 다 완료되면 최종 궁합 버튼 표시
+  const finalBtn = document.getElementById('final-compat-btn-wrap');
+  if(finalBtn) finalBtn.style.display = 'block';
+
+  const saveBtn = document.getElementById('compat-save-btn');
+  if(saveBtn) saveBtn.style.display = 'block';
 }
 
-function buildPrompt(info) {
-  const base = `당신은 동양 숙요점(27숙)과 서양 별자리를 결합한 최고의 궁합 전문가입니다.
+// ── 최종 궁합 결과 ──
+async function showFinalCompat() {
+  const s = window._compatScores || {zodiac:70, sugyo:70, total:70};
+  document.getElementById('final-zodiac-score').textContent = s.zodiac;
+  document.getElementById('final-sugyo-score').textContent  = s.sugyo;
+  document.getElementById('final-total-score').textContent  = s.total;
+  document.getElementById('final-compat-result').style.display = 'block';
+  document.getElementById('final-compat-btn-wrap').style.display = 'none';
+
+  const finalLoading = document.getElementById('final-compat-loading');
+  const finalContent = document.getElementById('final-compat-content');
+  if(finalLoading) finalLoading.style.display = 'block';
+
+  // 공통분모 추출 프롬프트
+  const info = window._compatInfo;
+  if (!info) { if(finalLoading) finalLoading.style.display='none'; return; }
+
+  const prompt = `당신은 서양 별자리와 동양 숙요점을 결합한 궁합 전문가입니다.
 
 【두 사람 정보】
-- 나: ${info.myName} / ${info.myZodiac}(${info.myKeyword}) / 숙요점: ${info.mySugyo}(${info.mySugyoDesc})
-- 상대: ${info.pName} / ${info.pZodiac}(${info.pKeyword}) / 숙요점: ${info.pSugyo}(${info.pSugyoDesc})
-- 관계: ${info.pRel} / 숙요점 관계: ${info.relType}(${info.relDesc}) / 궁합점수: ${info.totalScore}점
+- ${info.myName}: ${info.myZodiac}(${info.myKeyword}) × 숙요점 ${info.mySugyo}
+- ${info.pName}: ${info.pZodiac}(${info.pKeyword}) × 숙요점 ${info.pSugyo}
+- 숙요점 관계: ${info.relType} / 별자리 궁합: ${s.zodiac}점 / 숙요점 궁합: ${s.sugyo}점 / 총점: ${s.total}점
 
-【말투 규칙 — 반드시 지켜줘】
-- MZ 언니 스타일: 반말, 솔직, 직설, 공감, 이모지 자연스럽게
-- "있어요/해요" 절대 금지 → "있어/해" 반말로만
-- 딱딱한 표현 금지. 친한 언니가 솔직하게 털어놓는 말투
-- 예시는 최대한 구체적으로 (실제 상황, 대화 예시, 날짜 등)
+【말투 규칙】반말, MZ 언니 스타일, 구체적 예시 포함, 오타 없이
+
+【요청】 두 궁합(별자리+숙요점)의 공통분모만 추출해서 최종 총평 작성 (800자 이상)
+
+아래 형식으로 HTML 출력:
+<div class="report-block">
+  <div class="report-tag">✦ 두 체계가 공통으로 말하는 것</div>
+  <div class="report-text">별자리와 숙요점이 동시에 강조하는 이 관계의 핵심 특징</div>
+</div>
+<div class="report-block">
+  <div class="report-tag">🔮 이 인연의 본질</div>
+  <div class="report-text">두 체계 공통으로 보이는 이 관계의 진짜 의미와 방향</div>
+</div>
+<div class="report-block">
+  <div class="report-tag">💡 최종 한마디</div>
+  <div class="report-text">${info.myName}에게 전하는 솔직한 최종 조언</div>
+</div>`;
+
+  try {
+    const text = await callClaudeAPI(prompt, 2000);
+    if(finalLoading) finalLoading.style.display = 'none';
+    if(finalContent) finalContent.innerHTML = text;
+  } catch(e) {
+    if(finalLoading) finalLoading.style.display = 'none';
+    if(finalContent) finalContent.innerHTML = `<div class="report-block"><div class="report-tag">🔮 최종 총평</div><div class="report-text">두 체계가 공통으로 말하는 건 이거야 — 이 인연, 쉽지 않을 수 있지만 서로에게 배울 게 있어. 총점 ${s.total}점, 이 숫자보다 중요한 건 두 사람이 어떻게 하느냐야.</div></div>`;
+  }
+
+  document.getElementById('final-compat-result').scrollIntoView({behavior:'smooth'});
+}
+
+function buildDayCompatPrompt(info) {
+  const base = `당신은 서양 점성술 전문가입니다. 두 사람의 별자리 하우스 관점에서 궁합을 분석해주세요.
+
+【두 사람 정보】
+- ${info.myName}: ${info.myZodiac}(${info.myKeyword})
+- ${info.pName}: ${info.pZodiac}(${info.pKeyword})
+- 관계: ${info.pRel} / 별자리 궁합점수: ${info.zodiacScore}점
+
+【말투 규칙】반말, MZ 언니 스타일, 구체적 예시, 오타 없이, 조사 정확히
 
 【HTML 출력 형식】
-각 섹션: <div class="report-block"><div class="report-tag">섹션제목</div><div class="report-text">내용</div></div>
-탭카드: <div class="tab-cards"><div class="tab-card good"><div class="tab-card-label">✦ 제목</div><div>내용</div></div><div class="tab-card bad"><div class="tab-card-label">◆ 제목</div><div>내용</div></div></div>`;
+각 섹션: <div class="report-block"><div class="report-tag">제목</div><div class="report-text">내용</div></div>
+탭카드: <div class="tab-cards"><div class="tab-card good">...</div></div>`;
 
-  if (info.plan === 'monthly') {
-    return base + `
+  if (info.plan==='monthly') return base + `
 
-【요청】 ${info.timeInfo} ${info.myName}과 ${info.pName}의 관계 월운 분석
-반드시 1500자 이상 작성. 아래 모든 섹션 빠짐없이 작성해줘.
+【요청】☀️ ${info.timeInfo} 두 사람 별자리 하우스 궁합 — 1500자 이상
+① 이달 두 사람 관계 흐름 (별자리 관점)
+② 각자의 하우스 에너지가 이달 어떻게 상호작용하는지
+③ ${info.myZodiac}과 ${info.pZodiac}의 이달 트랜짓과 애스펙트
+④ 이달 구체적 시나리오 (상황 예시 2개 이상)
+⑤ 이달 행동 가이드 (구체적 타이밍 포함)`;
 
-① 🔴 ${info.timeInfo} 관계 흐름 총정리 (200자 이상)
-- 이달 두 사람 관계가 전반적으로 어떻게 흘러가는지 한눈에
-- ${info.relType} 에너지가 이달 어떻게 작용하는지
-- 숙요점과 별자리 관점 모두 포함
+  if (info.plan==='yearly') return base + `
 
-② 🌙 숙요점으로 보는 이달 에너지 (300자 이상)
-- ${info.mySugyo}와 ${info.pSugyo}의 이달 에너지 흐름
-- 구체적으로 어떤 상황에서 이 에너지가 느껴지는지 예시 포함
-- 예: "카톡 할 때 ${info.pName}이 답장이 늦어지면 이건 ${info.pSugyo} 에너지가 내면으로 향하는 거야, 오해하지 마"
-
-③ ☀️ 별자리로 보는 이달 에너지 (200자 이상)
-- ${info.myZodiac}과 ${info.pZodiac}의 이달 상호작용
-- 구체적 상황 예시 포함
-
-④ 📅 날짜별 에너지 흐름 (400자 이상)
-- 상순(1~10일): 구체적으로 어떤 일이 생길 수 있는지, 좋은 날 나쁜 날
-- 중순(11~20일): 구체적으로
-- 하순(21~말일): 구체적으로
-- 각 시기마다 "이런 상황이 오면 이렇게 해" 같은 실전 팁 포함
-
-⑤ 💫 이달 구체적 시나리오 (300자 이상)
-- 긍정 시나리오: 실제로 어떤 일이 어떻게 펼쳐질 수 있는지 스토리텔링
-- 주의 시나리오: 어떤 상황에서 문제가 생길 수 있는지 구체적으로
-- 예: "만약 이달 중순에 ${info.pName}이 갑자기 연락이 뜸해지면, 그건 ~때문이야. 이럴 때 ${info.myName}이 ~하면 돼"
-
-⑥ 💡 이달 행동 가이드 (200자 이상)
-- 구체적으로 언제 어떻게 행동하면 좋은지
-- 해야 할 말, 하지 말아야 할 말
-- D-Day: 이달 중 가장 중요한 날이나 타이밍 제시`;
-  }
-
-  if (info.plan === 'yearly') {
-    return base + `
-
-【요청】 ${info.timeInfo} ${info.myName}과 ${info.pName}의 연간 인연 리포트
-반드시 4000자 이상 작성. 아래 모든 섹션 빠짐없이, 각 섹션 충분히 길게 작성해줘.
-
-① 🔴 ${info.timeInfo} 관계 흐름 총정리 (400자 이상)
-- 올해 두 사람 관계의 큰 그림과 방향
-- 숙요점 ${info.relType} 에너지가 올해 전체에 어떻게 영향을 주는지
-- 올해 이 관계의 핵심 테마를 한마디로
-
-② 🌙 숙요점 연간 총운 (300자 이상)
-- ${info.mySugyo}와 ${info.pSugyo}가 올해 어떻게 상호작용하는지
-- 올해 특히 이 관계에서 주의해야 할 숙요점 에너지
-
-③ ☀️ 별자리 연간 총운 (300자 이상)
-- ${info.myZodiac}과 ${info.pZodiac}의 올해 에너지 흐름
-
-④ 📅 월별 상세 예측 (각 월 최소 200자 이상, 총 2400자 이상)
-1월부터 12월까지 각각:
-- 이달의 에너지와 두 사람 관계 흐름
-- 구체적으로 어떤 일이 생길 수 있는지 (예: "3월엔 ${info.pName}이 먼저 진지한 이야기를 꺼낼 수 있어. 그 자리에서 ~하면 좋아")
-- 좋은 달/조심해야 할 달 표시
-- 각 달마다 실전 팁 1개 이상
-
-⑤ 🔥 올해 핵심 변곡점 3개 (400자 이상)
-- 올해 관계에서 가장 결정적인 순간 3개를 구체적으로
-- 각 변곡점마다 "이 순간을 어떻게 넘기느냐"에 따라 어떻게 달라지는지
-
-⑥ 💡 연간 전략 & 해결책 (400자 이상)
-- 올해 이 관계를 잘 가져가기 위한 구체적인 전략
-- 숙요점 에너지 활용법
-- 별자리 에너지 활용법
-- 하지 말아야 할 것들`;
-  }
+【요청】☀️ ${info.timeInfo} 두 사람 별자리 궁합 연간 리포트 — 4000자 이상
+① 올해 두 사람 별자리 관계 흐름 총정리
+② 1~12월 월별 별자리 에너지 예측 (각 월 200자 이상, 구체적 상황 예시)
+③ 올해 가장 중요한 별자리 트랜짓 변곡점 3개
+④ 연간 별자리 전략 (각 하우스 활용법)`;
 
   return base + `
 
-【요청】 ${info.myName}과 ${info.pName}의 전체 궁합 완전 분석 리포트
-반드시 7000자 이상 작성. 아래 모든 섹션 빠짐없이, 각 섹션 충분히 풍부하게 작성해줘.
-구체적인 상황 예시, 대화 예시, 실제 스토리텔링을 최대한 많이 넣어줘.
-
-① 🔴 전체 관계 흐름 총정리 (500자 이상)
-- 두 사람 관계의 본질과 큰 그림
-- 숙요점 ${info.relType} 에너지가 이 관계 전체에 미치는 영향
-- 이 인연을 한마디로 정의한다면
-
-② 🌟 전생의 인연 (500자 이상)
-- 두 사람이 전생에서 어떤 관계였는지 구체적으로
-- ${info.mySugyo}와 ${info.pSugyo}의 전생 에너지
-- 이번 생에 왜 다시 만났는지, 서로에게 어떤 과제를 가져왔는지
-- 처음 만났을 때 느꼈을 법한 감정 묘사 포함
-
-③ 💫 현생의 끌림 — 왜 이 사람인가 (500자 이상)
-- 두 사람이 서로에게 끌리는 진짜 이유를 숙요점+별자리로 분석
-- 구체적인 상황 예시: "예를 들어 ${info.pName}이 ~할 때 ${info.myName}은 왜 설레는지"
-- 서로 어떤 부분에서 자기가 가지지 못한 것을 보는지
-
-④ ✨ 잘 맞는 부분 (600자 이상)
-- 구체적으로 어떤 상황에서 시너지가 나는지 예시와 함께
-- 함께할 때 가장 행복한 순간들 묘사
-- 숙요점 시너지 + 별자리 시너지 각각 분석
-- 예: "두 사람이 여행을 가면 ~한 방식으로 잘 맞아. 왜냐면 ~이기 때문이야"
-
-⑤ ⚡ 계속 부딪히는 부분 (600자 이상)
-- 반복되는 갈등 패턴을 구체적으로
-- 실제로 어떤 상황에서 싸우게 되는지 시나리오로
-- 예: "${info.myName}이 ~하면 ${info.pName}은 ~하게 반응해. 그러면 ${info.myName}은 또 ~해서 싸움이 커져"
-- 이 패턴의 근본 원인 분석
-
-⑥ 🔮 향후 10년 예측 (2000자 이상)
-올해부터 10년간 1년 단위로 각각:
-- 그 해의 두 사람 관계 에너지와 키워드
-- 구체적으로 어떤 일이 생길 수 있는지
-- 그 해 관계에서 가장 중요한 것
-- 좋은 해/도전적인 해 표시
-- 특히 결정적인 해는 더 자세히 (관계가 크게 변하는 시점)
-
-⑦ 💡 위기 극복 해결책 (800자 이상)
-- 이 관계에서 반드시 알아야 할 핵심 해결책
-- 단기(지금 당장), 중기(6개월~2년), 장기(2년 이후) 전략 각각
-- 숙요점 에너지 활용 구체적 방법
-- 별자리 에너지 활용 구체적 방법
-- 갈등 상황에서 써먹을 수 있는 실전 대화법 예시
-- 예: "이런 상황이 오면 '~'라고 말해봐. 이 말이 ${info.pZodiac}인 ${info.pName}한테 특히 잘 먹혀"
-
-⑧ 🌟 최종 총평 (500자 이상)
-- 이 인연을 점수와 함께 총정리
-- 솔직하게: 이 관계가 장기적으로 어디까지 갈 수 있는지
-- 이 인연을 유지하려면 두 사람 각각 뭘 바꿔야 하는지
-- 마지막으로 ${info.myName}에게 전하는 한마디`;
+【요청】☀️ 두 사람 별자리 하우스 전체 궁합 — 5000자 이상
+① 1하우스: 두 사람의 첫인상과 외면적 매력 (서로 어떻게 보이는지)
+② 5하우스: 연애 방식과 로맨스 스타일 비교 (구체적 상황 예시 3개 이상)
+③ 7하우스: 파트너십 궁합 (무엇이 잘 맞고 무엇이 부딪히는지)
+④ 8하우스: 깊은 결합과 변화 (두 사람이 서로에게 어떤 영향을 주는지)
+⑤ 각 하우스 간 애스펙트 (상호작용과 긴장 관계)
+⑥ 향후 10년 별자리 트랜짓으로 보는 관계 흐름 (1년 단위)
+⑦ 최종 별자리 관점 총평`;
 }
 
-// ── fallback 리포트 (API 없을 때) ──
+function buildNightCompatPrompt(info) {
+  const base = `당신은 동양 숙요점(27숙) 전문가입니다. 두 사람의 숙요점으로 궁합을 분석해주세요.
+
+【두 사람 정보】
+- ${info.myName}: 숙요점 ${info.mySugyo}(${info.mySugyoDesc})
+- ${info.pName}: 숙요점 ${info.pSugyo}(${info.pSugyoDesc})
+- 관계: ${info.pRel} / 숙요점 관계: ${info.relType}(${info.relDesc}) / 숙요점 점수: ${info.sugyoScore}점
+
+【말투 규칙】반말, MZ 언니 스타일, 구체적 예시, 오타 없이, 조사 정확히
+
+【HTML 출력 형식】
+각 섹션: <div class="report-block"><div class="report-tag">제목</div><div class="report-text">내용</div></div>
+탭카드: <div class="tab-cards"><div class="tab-card good">...</div></div>`;
+
+  if (info.plan==='monthly') return base + `
+
+【요청】🌙 ${info.timeInfo} 두 사람 숙요점 궁합 월운 — 1500자 이상
+① 이달 숙요점 "${info.relType}" 에너지가 두 사람 관계에 미치는 영향
+② ${info.mySugyo}와 ${info.pSugyo}의 이달 에너지 흐름
+③ 이달 구체적 시나리오 (숙요점 관점, 상황 예시 2개)
+④ 이달 숙요점 기반 행동 가이드`;
+
+  if (info.plan==='yearly') return base + `
+
+【요청】🌙 ${info.timeInfo} 두 사람 숙요점 궁합 연간 리포트 — 4000자 이상
+① 올해 숙요점 관계 흐름 총정리
+② 1~12월 월별 숙요점 에너지 예측 (각 월 200자 이상)
+③ 올해 숙요점 관계 변곡점 3개
+④ 연간 숙요점 에너지 활용 전략`;
+
+  return base + `
+
+【요청】🌙 두 사람 숙요점 전체 궁합 — 5000자 이상
+① 전생의 인연 (${info.mySugyo}와 ${info.pSugyo}의 우주적 연결)
+② 현생의 끌림 (숙요점 "${info.relType}" 관계의 본질)
+③ 잘 맞는 부분 (구체적 상황 예시 3개 이상)
+④ 계속 부딪히는 부분 (구체적 갈등 시나리오)
+⑤ 향후 10년 숙요점 에너지 흐름 (1년 단위)
+⑥ 위기 극복 대화법 (실제 써먹을 수 있는 대화 예시)
+⑦ 최종 숙요점 관점 총평`;
+}
 function buildFallbackReport(info) {
   const {myName,pName,pRel,myZodiac,myKeyword,pZodiac,pKeyword,
          mySugyo,mySugyoDesc,pSugyo,pSugyoDesc,
