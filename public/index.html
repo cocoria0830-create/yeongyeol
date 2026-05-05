@@ -2652,16 +2652,26 @@ ${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
 
 </div>`;
 
-  // 병렬로 두 리포트 동시 생성
-  const [dayResult, nightResult] = await Promise.allSettled([
-    callClaudeAPI(dayPrompt, 4000),
-    callClaudeAPI(nightPrompt, 4000),
-  ]);
+  // 순차 호출 (429 방지 — 무료 플랜 분당 한도)
+  let dayText = '', nightText = '';
 
-  document.getElementById('dayCards').innerHTML =
-    dayResult.status === 'fulfilled' ? dayResult.value : buildPersonalFallback(name, z, s, 'day');
-  document.getElementById('nightCards').innerHTML =
-    nightResult.status === 'fulfilled' ? nightResult.value : buildPersonalFallback(name, z, s, 'night');
+  try {
+    dayText = await callClaudeAPI(dayPrompt, 4000);
+  } catch(e) {
+    dayText = buildPersonalFallback(name, z, s, 'day');
+  }
+
+  // 1.5초 딜레이 후 나이트 호출
+  await new Promise(r => setTimeout(r, 1500));
+
+  try {
+    nightText = await callClaudeAPI(nightPrompt, 4000);
+  } catch(e) {
+    nightText = buildPersonalFallback(name, z, s, 'night');
+  }
+
+  document.getElementById('dayCards').innerHTML = dayText;
+  document.getElementById('nightCards').innerHTML = nightText;
 }
 
 async function callClaudeAPI(prompt, maxTokens = 3000) {
@@ -3067,18 +3077,28 @@ async function generateCompatReport(info) {
   // 나이트모드 프롬프트 — 숙요점으로 본 궁합
   const nightPrompt = buildNightCompatPrompt(info);
 
-  const [dayResult, nightResult] = await Promise.allSettled([
-    callClaudeAPI(dayPrompt, 8000),
-    callClaudeAPI(nightPrompt, 8000),
-  ]);
+  // 순차 호출 (429 방지)
+  let dayText = '', nightText = '';
+
+  try {
+    dayText = await callClaudeAPI(dayPrompt, 8000);
+  } catch(e) {
+    dayText = buildFallbackReport(info);
+  }
 
   if(dayLoading) dayLoading.style.display = 'none';
+  if(dayContent) dayContent.innerHTML = dayText;
+
+  // 2초 딜레이
+  await new Promise(r => setTimeout(r, 2000));
+
+  try {
+    nightText = await callClaudeAPI(nightPrompt, 8000);
+  } catch(e) {
+    nightText = buildFallbackReport(info);
+  }
+
   if(nightLoading) nightLoading.style.display = 'none';
-
-  const dayText  = dayResult.status==='fulfilled'  ? dayResult.value  : buildFallbackReport(info);
-  const nightText = nightResult.status==='fulfilled' ? nightResult.value : buildFallbackReport(info);
-
-  if(dayContent)   dayContent.innerHTML  = dayText;
   if(nightContent) nightContent.innerHTML = nightText;
 
   // 둘 다 완료되면 최종 궁합 버튼 표시
