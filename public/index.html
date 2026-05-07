@@ -689,13 +689,13 @@
   .tab-card {
     border-radius: 12px;
     padding: 14px 16px;
-    font-size: 12.5px;
+    font-size: 14px;
     line-height: 1.85;
     letter-spacing: 0.03em;
   }
 
   .tab-card-label {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.15em;
     margin-bottom: 7px;
@@ -2661,8 +2661,8 @@ ${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
     dayText = buildPersonalFallback(name, z, s, 'day');
   }
 
-  // 1.5초 딜레이 후 나이트 호출
-  await new Promise(r => setTimeout(r, 1500));
+  // 3초 딜레이 후 나이트 호출 (429 방지)
+  await new Promise(r => setTimeout(r, 3000));
 
   try {
     nightText = await callClaudeAPI(nightPrompt, 4000);
@@ -2674,22 +2674,29 @@ ${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
   document.getElementById('nightCards').innerHTML = nightText;
 }
 
-async function callClaudeAPI(prompt, maxTokens = 3000) {
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: maxTokens }
-      })
+async function callClaudeAPI(prompt, maxTokens = 3000, retries = 3) {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const res = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, maxTokens })
+      });
+      if (res.status === 429) {
+        if (attempt < retries - 1) {
+          await new Promise(r => setTimeout(r, 2000 * (attempt + 1)));
+          continue;
+        }
+        throw new Error('429');
+      }
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const data = await res.json();
+      return data.text || '';
+    } catch(e) {
+      if (attempt === retries - 1) throw e;
+      await new Promise(r => setTimeout(r, 2000 * (attempt + 1)));
     }
-  );
-  if (!res.ok) throw new Error('API error ' + res.status);
-  const data = await res.json();
-  return (data.candidates?.[0]?.content?.parts?.[0]?.text || '')
-    .replace(/\*\*(.*?)\*\*/g, '$1');
+  }
 }
 
 // 개인 분석 fallback
@@ -3089,8 +3096,8 @@ async function generateCompatReport(info) {
   if(dayLoading) dayLoading.style.display = 'none';
   if(dayContent) dayContent.innerHTML = dayText;
 
-  // 2초 딜레이
-  await new Promise(r => setTimeout(r, 2000));
+  // 3초 딜레이 (429 방지)
+  await new Promise(r => setTimeout(r, 3000));
 
   try {
     nightText = await callClaudeAPI(nightPrompt, 8000);
@@ -3558,8 +3565,7 @@ function goBackToResult() {
 }
 
 // ── Gemini API 설정 ──
-// ⚠️ 아래에 Gemini API 키를 입력해줘요 (AIza...로 시작하는 키)
-const GEMINI_API_KEY = 'AIzaSyB2m3GHn_2XlCRxReIJsD7e9yg1sj3xNMI';  // 예: 'AIzaSy...'
+// 키는 Netlify 환경변수에 저장 — 여기엔 키를 쓰지 않아요
 
 // ── 이미지 저장 ──
 async function saveResultImage(pageId) {
