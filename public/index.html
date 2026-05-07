@@ -2656,16 +2656,16 @@ ${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
   let dayText = '', nightText = '';
 
   try {
-    dayText = await callClaudeAPI(dayPrompt, 4000);
+    dayText = await callClaudeAPI(dayPrompt, 2500);
   } catch(e) {
     dayText = buildPersonalFallback(name, z, s, 'day');
   }
 
-  // 3초 딜레이 후 나이트 호출 (429 방지)
-  await new Promise(r => setTimeout(r, 3000));
+  // 5초 딜레이 후 나이트 호출 (429 방지)
+  await new Promise(r => setTimeout(r, 5000));
 
   try {
-    nightText = await callClaudeAPI(nightPrompt, 4000);
+    nightText = await callClaudeAPI(nightPrompt, 2500);
   } catch(e) {
     nightText = buildPersonalFallback(name, z, s, 'night');
   }
@@ -3088,7 +3088,7 @@ async function generateCompatReport(info) {
   let dayText = '', nightText = '';
 
   try {
-    dayText = await callClaudeAPI(dayPrompt, 8000);
+    dayText = await callClaudeAPI(dayPrompt, 3000);
   } catch(e) {
     dayText = buildFallbackReport(info);
   }
@@ -3096,11 +3096,11 @@ async function generateCompatReport(info) {
   if(dayLoading) dayLoading.style.display = 'none';
   if(dayContent) dayContent.innerHTML = dayText;
 
-  // 3초 딜레이 (429 방지)
-  await new Promise(r => setTimeout(r, 3000));
+  // 5초 딜레이 (429 방지 — 토큰 한도 회복 대기)
+  await new Promise(r => setTimeout(r, 5000));
 
   try {
-    nightText = await callClaudeAPI(nightPrompt, 8000);
+    nightText = await callClaudeAPI(nightPrompt, 3000);
   } catch(e) {
     nightText = buildFallbackReport(info);
   }
