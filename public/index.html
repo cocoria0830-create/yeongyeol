@@ -682,23 +682,23 @@
   .tab-cards {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 4px;
+    gap: 14px;
+    margin-top: 8px;
   }
 
   .tab-card {
-    border-radius: 12px;
-    padding: 14px 16px;
-    font-size: 14px;
-    line-height: 1.85;
-    letter-spacing: 0.03em;
+    border-radius: 14px;
+    padding: 18px 18px;
+    font-size: 14.5px;
+    line-height: 2;
+    letter-spacing: 0.02em;
   }
 
   .tab-card-label {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.15em;
-    margin-bottom: 7px;
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 5px;
@@ -2470,13 +2470,14 @@ async function generatePersonalReport(name, z, s, birth, isLunar) {
 태양별자리: ${z.name} (${z.keyword})
 출생일: ${birth || '정보없음'}
 
-【핵심 말투 규칙 — 반드시 지켜줘】
-1. 반말만 사용. "있어요/해요/이에요" 절대 금지
-2. 주어+서술어 문장 구조 정확하게. "처녀자리는", "처녀자리가" (조사 정확히)
-3. 문장 끝을 "~야", "~어", "~거든", "~잖아"로 자연스럽게
-4. MZ 언니가 친구한테 솔직하게 털어놓는 말투
-5. 이모지 자연스럽게 사용
-6. 구체적 상황 예시 반드시 포함
+【핵심 말투 규칙 — 전체 응답에서 반드시 지켜줘】
+1. 반말만 사용. "있어요/해요/이에요/합니다" 절대 금지
+2. 조사 정확하게. "${z.name}은", "${z.name}가", "${z.name}의" (조사 틀리면 안 돼)
+3. 문장 끝: "~야", "~어", "~거든", "~잖아", "~이야" 자연스럽게
+4. MZ 언니가 친한 친구한테 솔직하게 털어놓는 말투. 딱딱하거나 설명문 느낌 절대 금지
+5. 이모지 자연스럽게 사용 (각 카드당 1~2개)
+6. 구체적 상황 예시 반드시 포함 — 추상적 설명 금지
+7. 모든 카드 말투 동일하게 통일
 
 【요청】 ${name}의 ${z.name} 하우스별 심층 분석 — 반드시 2000자 이상 작성
 
@@ -2581,12 +2582,14 @@ ${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
 숙요점: ${s.name}
 특성: ${s.desc}
 
-【핵심 말투 규칙 — 반드시 지켜줘】
-1. 반말만 사용. "있어요/해요/이에요" 절대 금지
-2. 주어+조사 정확하게. "${s.name}은", "${s.name}의", "${s.name}이" (조사 정확히)
-3. MZ 언니가 친구한테 솔직하게 털어놓는 말투
-4. 이모지 자연스럽게 사용
-5. 구체적 상황 예시 반드시 포함
+【핵심 말투 규칙 — 전체 응답에서 반드시 지켜줘】
+1. 반말만 사용. "있어요/해요/이에요/합니다" 절대 금지
+2. 조사 정확하게. "${s.name}은", "${s.name}의", "${s.name}이" (조사 틀리면 안 돼)
+3. 문장 끝: "~야", "~어", "~거든", "~잖아", "~이야" 자연스럽게
+4. MZ 언니가 친한 친구한테 솔직하게 털어놓는 말투. 딱딱하거나 설명문 느낌 절대 금지
+5. 이모지 자연스럽게 사용 (각 카드당 1~2개)
+6. 구체적 상황 예시 반드시 포함 — 추상적 설명 금지
+7. 모든 카드 말투 동일하게 통일
 
 【요청】 ${name}의 ${s.name} 숙요점 심층 분석 — 반드시 2000자 이상 작성
 
@@ -2656,7 +2659,7 @@ ${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
   let dayText = '', nightText = '';
 
   try {
-    dayText = await callClaudeAPI(dayPrompt, 4000);
+    dayText = await callClaudeAPI(dayPrompt, 6000);
   } catch(e) {
     dayText = buildPersonalFallback(name, z, s, 'day');
   }
@@ -2668,7 +2671,7 @@ ${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
   await new Promise(r => setTimeout(r, 5000));
 
   try {
-    nightText = await callClaudeAPI(nightPrompt, 4000);
+    nightText = await callClaudeAPI(nightPrompt, 6000);
   } catch(e) {
     nightText = buildPersonalFallback(name, z, s, 'night');
   }
