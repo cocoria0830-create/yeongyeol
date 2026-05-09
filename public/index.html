@@ -2656,21 +2656,23 @@ ${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
   let dayText = '', nightText = '';
 
   try {
-    dayText = await callClaudeAPI(dayPrompt, 2500);
+    dayText = await callClaudeAPI(dayPrompt, 4000);
   } catch(e) {
     dayText = buildPersonalFallback(name, z, s, 'day');
   }
+
+  // 데이 결과 즉시 표시
+  document.getElementById('dayCards').innerHTML = dayText;
 
   // 5초 딜레이 후 나이트 호출 (429 방지)
   await new Promise(r => setTimeout(r, 5000));
 
   try {
-    nightText = await callClaudeAPI(nightPrompt, 2500);
+    nightText = await callClaudeAPI(nightPrompt, 4000);
   } catch(e) {
     nightText = buildPersonalFallback(name, z, s, 'night');
   }
 
-  document.getElementById('dayCards').innerHTML = dayText;
   document.getElementById('nightCards').innerHTML = nightText;
 }
 
