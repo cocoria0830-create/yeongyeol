@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     const { prompt, maxTokens = 3000 } = req.body;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -23,7 +23,6 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // Gemini API 오류 내용 콘솔에 출력
     if (!response.ok) {
       console.error('Gemini API error:', JSON.stringify(data));
       return res.status(response.status).json({ error: JSON.stringify(data) });
