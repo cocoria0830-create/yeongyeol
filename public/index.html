@@ -2479,7 +2479,7 @@ async function generatePersonalReport(name, z, s, birth, isLunar) {
 6. 구체적 상황 예시 반드시 포함 — 추상적 설명 금지
 7. 모든 카드 말투 동일하게 통일
 
-【요청】 ${name}의 ${z.name} 하우스별 심층 분석 — 반드시 2000자 이상 작성
+【요청】 ${name}의 ${z.name} 하우스별 심층 분석 — 반드시 1500자 이상 작성
 
 아래 섹션 순서대로 HTML로 출력해줘.
 각 탭카드 내용은 최소 200자 이상, 구체적 상황 예시 2개 이상 포함.
@@ -2591,7 +2591,7 @@ ${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
 6. 구체적 상황 예시 반드시 포함 — 추상적 설명 금지
 7. 모든 카드 말투 동일하게 통일
 
-【요청】 ${name}의 ${s.name} 숙요점 심층 분석 — 반드시 2000자 이상 작성
+【요청】 ${name}의 ${s.name} 숙요점 심층 분석 — 반드시 1500자 이상 작성
 
 각 탭카드 내용은 최소 250자 이상, 구체적 상황 예시 2개 이상 포함.
 
@@ -2659,7 +2659,7 @@ ${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
   let dayText = '', nightText = '';
 
   try {
-    dayText = await callClaudeAPI(dayPrompt, 6000);
+    dayText = await callClaudeAPI(dayPrompt, 4000);
   } catch(e) {
     dayText = buildPersonalFallback(name, z, s, 'day');
   }
@@ -2671,7 +2671,7 @@ ${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
   await new Promise(r => setTimeout(r, 5000));
 
   try {
-    nightText = await callClaudeAPI(nightPrompt, 6000);
+    nightText = await callClaudeAPI(nightPrompt, 4000);
   } catch(e) {
     nightText = buildPersonalFallback(name, z, s, 'night');
   }
