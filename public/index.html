@@ -183,6 +183,17 @@
     margin-bottom: 16px;
     backdrop-filter: blur(12px);
     transition: background 0.5s, border 0.5s;
+    font-size: 14.5px;
+    line-height: 2;
+    letter-spacing: 0.02em;
+  }
+
+  /* AI 생성 콘텐츠 인라인 스타일 강제 무력화 */
+  .section-card * {
+    font-size: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: inherit !important;
+    font-family: inherit !important;
   }
 
   .section-label {
@@ -463,6 +474,13 @@
   /* ── 페이지 전환 ── */
   .page { display: none; }
   .page.active { display: block; }
+
+  /* 궁합 페이지 스크롤바 옆 빈 공간 클릭 방지 */
+  #page-compat {
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+  }
 
   /* ── 결과 섹션 (나의 분석) ── */
   .result-header {
@@ -2450,8 +2468,19 @@ function goToResult() {
   document.getElementById('zodiacKeyword').textContent = z.keyword;
   document.getElementById('sugyoName').textContent     = '🌙 ' + s.name;
 
-  // 전생 + 현생 목표 (기존 텍스트)
-  document.getElementById('pastReport').textContent = z.past;
+  // 전생 + 현생 목표 — Gemini API 호출
+  document.getElementById('pastReport').textContent = '✨ 분석 중...';
+  const pastPrompt = `
+${name}은 ${z.name}이야. 반말로 친한 친구한테 말하듯이 써줘. "있어요/해요" 절대 금지.
+${name}의 전생과 이번 생의 목표를 200자 내외로 써줘.
+딱 2~3문장으로 간결하게. HTML 태그 없이 순수 텍스트로만.
+예시 말투: "전생에 넌 ~이었어. 그래서 이번 생엔 ~하는 게 숙제야."
+  `.trim();
+  callClaudeAPI(pastPrompt, 500).then(t => {
+    document.getElementById('pastReport').textContent = t || z.past;
+  }).catch(() => {
+    document.getElementById('pastReport').textContent = z.past;
+  });
 
   // 데이/나이트 리포트 로딩 표시
   document.getElementById('dayCards').innerHTML = '<div style="text-align:center;padding:30px;opacity:0.5;font-size:13px;">☀️ 별자리 하우스 분석 중...<br><small>잠시만 기다려줘 ✦</small></div>';
@@ -2490,7 +2519,7 @@ async function generatePersonalReport(name, z, s, birth, isLunar) {
 9. 절대 금지: font-size, line-height, color 등 인라인 속성 금지
 10. 반드시 모든 div 태그를 닫고 완전한 HTML로 마무리할 것
 
-【요청】 ${name}의 ${z.name} 하우스별 심층 분석 — 반드시 1500자 이상, 반드시 끝까지 완성할 것
+【요청】 ${name}의 ${z.name} 하우스별 심층 분석 — 반드시 1200자 이상, 반드시 끝까지 완성할 것
 
 아래 섹션 순서대로 HTML로 출력해줘.
 각 탭카드 내용은 최소 150자 이상, 구체적 상황 예시 1개 이상 포함.
@@ -2606,7 +2635,7 @@ ${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
 9. 절대 금지: font-size, line-height, color 등 인라인 속성 금지
 10. 반드시 모든 div 태그를 닫고 완전한 HTML로 마무리할 것
 
-【요청】 ${name}의 ${s.name} 숙요점 심층 분석 — 반드시 1500자 이상, 반드시 끝까지 완성할 것
+【요청】 ${name}의 ${s.name} 숙요점 심층 분석 — 반드시 1200자 이상, 반드시 끝까지 완성할 것
 
 각 탭카드 내용은 최소 150자 이상, 구체적 상황 예시 1개 이상 포함.
 ⚠️ 중간에 끊지 말고 반드시 마지막 </div>까지 완성해줘.
@@ -3207,7 +3236,8 @@ function buildDayCompatPrompt(info) {
 
   if (info.plan==='monthly') return base + `
 
-【요청】☀️ ${info.timeInfo} 두 사람 별자리 하우스 궁합 — 1500자 이상
+【요청】☀️ ${info.timeInfo} 두 사람 별자리 하우스 궁합 — 1200자 이상, 반드시 끝까지 완성할 것
+⚠️ style= 인라인 스타일 절대 금지. 중간에 끊지 말고 마지막 </div>까지 완성해줘.
 ① 이달 두 사람 관계 흐름 (별자리 관점)
 ② 각자의 하우스 에너지가 이달 어떻게 상호작용하는지
 ③ ${info.myZodiac}과 ${info.pZodiac}의 이달 트랜짓과 애스펙트
@@ -3250,7 +3280,8 @@ function buildNightCompatPrompt(info) {
 
   if (info.plan==='monthly') return base + `
 
-【요청】🌙 ${info.timeInfo} 두 사람 숙요점 궁합 월운 — 1500자 이상
+【요청】🌙 ${info.timeInfo} 두 사람 숙요점 궁합 월운 — 1200자 이상, 반드시 끝까지 완성할 것
+⚠️ style= 인라인 스타일 절대 금지. 중간에 끊지 말고 마지막 </div>까지 완성해줘.
 ① 이달 숙요점 "${info.relType}" 에너지가 두 사람 관계에 미치는 영향
 ② ${info.mySugyo}와 ${info.pSugyo}의 이달 에너지 흐름
 ③ 이달 구체적 시나리오 (숙요점 관점, 상황 예시 2개)
