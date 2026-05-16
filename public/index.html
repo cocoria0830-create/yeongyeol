@@ -536,6 +536,14 @@
     transition: transform 0.9s cubic-bezier(0.4, 0.2, 0.2, 1);
   }
   .flip-card.flipped { transform: rotateY(180deg); }
+
+  /* 데이모드에서 flip 카드 뒷면(숙요점) 클릭 비활성화 */
+  body:not(.night-mode) .flip-scene {
+    pointer-events: none;
+  }
+  body:not(.night-mode) .flip-hint {
+    display: none;
+  }
   .flip-face {
     position: absolute;
     width: 100%; height: 100%;
@@ -2528,88 +2536,33 @@ async function generatePersonalReport(name, z, s, birth, isLunar) {
 <div class="tab-cards">
 
 <div class="tab-card good">
-<div class="tab-card-label">✦ 1하우스 · 외면의 나 — 남들이 보는 ${name}</div>
+<div class="tab-card-label">✦ 외면의 나 — 1하우스 · 남들이 보는 ${name}</div>
 <div>
-${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
-- 첫인상과 겉으로 드러나는 이미지
-- 남들 눈에 ${name}은 어떤 사람으로 보이는지
-- ${z.name} 특유의 외적 에너지와 분위기
-- 실제 상황 예시 2개 이상 (예: "처음 만나는 자리에서 ${name}은 보통 ~하게 행동해. 왜냐면 ~이기 때문이야")
-- 1하우스가 다른 하우스(특히 7하우스)와 어떻게 상호작용하는지
+${z.name}이 1하우스에 미치는 영향 — 첫인상, 겉으로 드러나는 이미지, ${z.name} 특유의 에너지.
+실제 상황 예시 포함 (예: "처음 만나는 자리에서 ${name}은 보통 ~하게 행동해.")
 </div>
 </div>
 
 <div class="tab-card good">
-<div class="tab-card-label">✦ 3·9하우스 · 생각과 소통 방식</div>
+<div class="tab-card-label">✦ 연애와 관계 — 5·7하우스 · ${name}의 사랑 방식</div>
 <div>
-- ${z.name}의 사고방식과 커뮤니케이션 스타일
-- 대화할 때 나타나는 특징들
-- 정보를 처리하고 표현하는 방식
-- 실제 대화 예시 포함 (예: "논쟁이 생기면 ${name}은 보통 '~'라고 말하는 편이야")
-</div>
-</div>
-
-<div class="tab-card good">
-<div class="tab-card-label">✦ 4·12하우스 · 내면 깊숙한 곳</div>
-<div>
-- ${z.name}의 감정적 기반과 무의식
-- 혼자 있을 때의 진짜 모습
-- 가정과 뿌리에 대한 태도
-- 4하우스와 12하우스의 애스펙트로 보이는 숨겨진 성격
-- 구체적 상황 예시 포함
-</div>
-</div>
-
-<div class="tab-card good">
-<div class="tab-card-label">✦ 5·8하우스 · 연애 스타일과 끌림</div>
-<div>
-- ${z.name}의 연애 방식과 사랑 표현법
-- 어떤 사람에게 끌리는지
-- 연애할 때 나타나는 행동 패턴
-- 5하우스(로맨스)와 8하우스(깊은 결합)의 상호작용
-- 구체적 연애 상황 예시 2개 이상 (예: "좋아하는 사람이 생기면 ${name}은 ~하게 행동해. 반대로 상대가 ~하면 바로 ~하는 경향이 있어")
-- 잘 맞는 상대 유형과 피해야 할 유형
-</div>
-</div>
-
-<div class="tab-card good">
-<div class="tab-card-label">✦ 7·11하우스 · 파트너십과 인간관계</div>
-<div>
-- ${z.name}이 원하는 이상적인 파트너 유형
-- 관계에서 나타나는 패턴
-- 친구 관계와 연인 관계에서의 차이
-- 7하우스(파트너십)와 11하우스(사회적 관계)의 애스펙트
-- 구체적 관계 예시 포함
-</div>
-</div>
-
-<div class="tab-card good">
-<div class="tab-card-label">✦ 10하우스 · 사회적 이미지와 커리어</div>
-<div>
-- 남들이 보는 ${name}의 사회적 모습
-- 일할 때 나타나는 특징
-- 커리어에서 빛나는 순간들
-- 구체적 상황 예시 포함
+${z.name}의 연애 방식, 어떤 사람에게 끌리는지, 관계에서 나타나는 패턴.
+실제 연애 상황 예시 포함 (예: "좋아하는 사람이 생기면 ${name}은 ~하게 행동해.")
 </div>
 </div>
 
 <div class="tab-card bad">
 <div class="tab-card-label">◆ 솔직히 말하면 — ${z.name}의 그림자</div>
 <div>
-- ${z.name}이 무의식적으로 반복하는 부정적 패턴
-- 남들을 힘들게 하는 행동들
-- 본인도 모르게 자기 자신을 힘들게 하는 부분
-- 구체적 상황 예시 2개 이상
+${z.name}이 무의식적으로 반복하는 부정적 패턴, 본인도 모르게 자신을 힘들게 하는 부분.
+구체적 상황 예시 포함.
 </div>
 </div>
 
 <div class="tab-card solution">
-<div class="tab-card-label">→ 하우스 애스펙트 종합 — ${name}에게 전하는 말</div>
+<div class="tab-card-label">→ ${name}에게 전하는 말</div>
 <div>
-- 각 하우스들이 서로 어떻게 연결되어 ${name}만의 개성을 만드는지
-- 가장 강하게 작용하는 하우스 조합
-- ${z.name}으로 태어난 ${name}의 진짜 강점
-- 지금 당장 써먹을 수 있는 실전 조언
+${z.name}으로 태어난 ${name}의 진짜 강점과 지금 당장 써먹을 수 있는 실전 조언.
 </div>
 </div>
 
@@ -2645,56 +2598,31 @@ ${z.name}이 1하우스에 미치는 영향을 상세히 설명해줘.
 <div class="tab-card good">
 <div class="tab-card-label">✦ ${s.name}의 본질 — 이 숙요점을 타고난 사람</div>
 <div>
-- ${s.name}이 가진 우주적 에너지의 본질
-- 이 숙요점을 타고난 사람이 세상을 바라보는 방식
-- ${s.name}만의 독보적인 강점과 재능
-- 구체적 상황 예시 2개 이상
-- 이 에너지가 일상에서 어떻게 드러나는지 (예: "${name}이 새로운 상황을 만나면 ~하게 반응해")
+${s.name}이 가진 에너지의 본질, 독보적인 강점과 재능.
+일상에서 어떻게 드러나는지 구체적 예시 포함.
 </div>
 </div>
 
 <div class="tab-card good">
-<div class="tab-card-label">✦ 내면의 ${name} — 혼자 있을 때의 진짜 모습</div>
+<div class="tab-card-label">✦ 관계에서의 ${name} — 친구·연인 사이에서</div>
 <div>
-- ${s.name} 에너지가 내면에 미치는 영향
-- 감정을 처리하는 방식
-- 혼자 있을 때 주로 하는 생각들
-- 외부에 잘 드러내지 않는 내면의 모습
-- 구체적 상황 예시 (예: "${name}이 상처받으면 보통 ~하게 반응해. 겉으론 ~해 보여도 실제론 ~이거든")
-</div>
-</div>
-
-<div class="tab-card good">
-<div class="tab-card-label">✦ 관계에서의 ${name} — 친구·연인·가족</div>
-<div>
-- ${s.name}이 인간관계에서 나타나는 방식
-- 친구한테는 어떤 사람인지
-- 연인한테는 어떤 사람인지
-- 가족 관계에서의 특징
-- 각 관계에서 구체적 행동 예시 2개 이상
-- 이 숙요점을 가진 사람이 관계에서 가장 빛나는 순간
+${s.name}이 인간관계에서 나타나는 방식, 연인·친구한테 어떤 사람인지.
+구체적 행동 예시 포함.
 </div>
 </div>
 
 <div class="tab-card bad">
 <div class="tab-card-label">◆ 솔직히 말하면 — ${s.name}의 그림자</div>
 <div>
-- ${s.name} 에너지가 부정적으로 작용할 때
-- 무의식적으로 반복하는 패턴
-- 관계에서 상대방을 힘들게 하는 행동들
-- 본인도 모르게 자기 자신을 힘들게 하는 부분
-- 구체적 상황 예시 2개 이상 (예: "이런 상황이 오면 ${name}은 ~하게 반응하는데, 상대방 입장에선 ~하게 느껴져")
+${s.name} 에너지가 부정적으로 작용할 때, 무의식적으로 반복하는 패턴.
+구체적 상황 예시 포함.
 </div>
 </div>
 
 <div class="tab-card solution">
 <div class="tab-card-label">→ ${name}에게 전하는 말</div>
 <div>
-- ${s.name} 에너지를 최대한 활용하는 방법
-- 지금 당장 써먹을 수 있는 실전 조언
-- 이 숙요점을 가진 사람이 행복해지려면
-- ${name}만의 강점을 키우는 방향
-- 마지막으로 한마디
+${s.name} 에너지를 최대한 활용하는 방법과 지금 당장 써먹을 수 있는 실전 조언.
 </div>
 </div>
 
